@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - 处理网络模型</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="关于网络处理 (PN) 模型和 网络处理模拟仿真实例。"/>
+
+ <link rel="stylesheet" type="text/css" href="../../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/additional-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/area-page.css" />
+ 
+</head>
+<body>
+ <header><img id="logo" src="../../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">处理网络模型</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+<p>在一个<b>处理网络（<em>PN </em>）</b>模型中，<strong>处理对象</strong>（表示例如客户或原材料）会通过一个<strong>抵达</strong>事件，经由<strong>入口节点</strong>处进入系统。然后处理对象会流过一个或多个<strong>处理节点</strong>（表示例如服务台或制造机器），而它们在通过一个<strong>离开事件</strong>而在<strong>出口节点</strong>处离开系统之前，会经过一系列<strong>处理活动</strong>。</p>
+
+  <figure style="float:right;">
+   <img src="../../img/four-consecutive-machines.svg" style=" width:100%;" alt="four-consecutive-machines" />
+  </figure>
+
+ <p> 对象事件模拟-网络处理建模（OES-PN）的概念基于<em>对象</em>，<em>事件</em>和<em>活动</em>的基本离散事件模拟(DES)建模概念。 网络处理（PN）模型的节点表示的建模元素，是重载的并且具有两个含义。入口和出口节点组合了一个（可能是空间的）节点对象和关联且隐式的（到达或离开的）事件类型，而处理节点组合了一个（可能是空间的）节点对象和关联且隐式活动类型。这种语义重载使PN模型更简洁，更易于阅读和理解。</p>
+
+<p>由于其直观的构建模块及其对制造和服务行业问题的适用性，网络处理建模（PN）是最广泛使用的离散事件模拟（DES）建模范例。它受到许多仿真工具的支持，例如<em> Arena </em>，<em> Simio </em>，<em> ExtendSim </em>，<em> Simul8 </em>和<em> AnyLogic </em>，每个人都使用他们自己的专有术语和图表语言来实现相同的概念。</p>
+
+<p>用于PN建模的OES概念是这些商业工具专有PN建模技术的开源替代方案，可用作理解和比较它们的参考概念框架。</p>
+
+<table border =“1”>
+ <b>用于相同网络处理（PN）建模概念的不同术语的比较。</b>
+ <thead>
+   <tr>
+     <th> OES-PN </th>
+     <th>Arena</th>
+     <th> SIMUL8 </th>
+     <th> SIMIO </th>
+     <th> AnyLogic</th>
+   </tr>
+ </thead>
+ <tbody>
+   <tr>
+     <td> 处理对象</br>Processing Object</td>
+     <td> 实体</br>Entity</td>
+     <td> 工作项</br>Work Item</p> </td>
+     <td> 标记</br>Token</p> </td>
+     <td> 代理</br>Agent</p> </td>
+   </tr>
+   <tr>
+     <td> 条目节点</br>Entry Node</p> </td>
+     <td> 创建</br>Create</p> </td>
+     <td> 起点</br>Start Point</p> </td>
+     <td> 来源</br>Source</p> </td>
+     <td> 来源</br>Source</p> </td>
+   </tr>
+   <tr>
+     <td> 处理节点</br>Processing Node</p> </td>
+     <td> 处理</br>Process</p> </td>
+     <td> 队列+活动</br>Queue + Activity</p> </td>
+     <td> 服务器</br>Server</p> </td>
+     <td> 服务</br>Service</p> </td>
+   </tr>
+   <tr>
+     <td> 退出节点</br>Exit Node</p> </td>
+     <td> 处置</br>Dispose</p> </td>
+     <td> 终点</br>End Point</p> </td>
+     <td> 水槽</br>Sink</p> </td>
+     <td> 水槽</br>Sink</p> </td>
+   </tr>
+ </tbody>
+    </table>
+	
+<aside><h1>网络处理建模实例</h1>
+ <dl>
+	<dt><a href="../sims/12">服务前台-4</br>ServiceDesk-4</a></dt>
+	<dd>一个服务前台被建模为处理网络的处理节点，其具有用于到达和离开的客户的入口节点和出口节点。</dd>
+	<dt><a href="../sims/11">连续服务-2</br>ConsecutiveServices-2</a></dt>
+	<dd>机动车部的客户首先必须在接待处排队，以便记录他们的请求。 然后他们必须等待一个能处理他们案件的职员。 接待台和案例处理台都被建模为处理网络内的处理节点（具有输入队列），该处理网络具有用于到达和离开的客户的入口节点和出口节点。</dd>
+	<dt><a href="../sims/13">四连续机器-3</br>FourConsecutiveMachines-3</a></dt>
+	<dd>制造公司使用具有4个连续机器的线性装配线。 模拟场景定义了传入订单的入口节点，表示四个机器M1-M4的4个连续处理节点和出口节点。</dd>
+ </dl>
+</aside>
+
+<section><h1>入口节点</h2>
+
+<p>入口节点由入口对象组成，该<b>入口对象</b>参与导致创建处理对象的外部<b>到达事件</b>，<b>处理对象</b>被路由到后继节点或被推送到输出队列。 入口节点的定义组合定义（可能是空间的）<b>入口</b>对象和关联的隐式到达事件类型。 可以被建模为入口节点的对象的示例是：办公室/建筑物入口和邮件接收办公室。</p>
+
+<section><h1>基本功能</h3>
+
+<p>一个入口节点对象定义应该包括：</p>
+
+<ol><li>一个<code>successorNode</code> 属性槽，用于分配处理对象路由到的后继节点;</li>
+	<li>一个<code>maxNmrOfArrivals</code> 属性槽，用于定义最大到达事件数，之后不再创建更多到达事件（因此，模拟可能会用完未来事件）;</li>
+	<li>或者
+	<ol><li>一个<code>arrivalRate</code> 属性槽，用于定义指数概率分布函数的事件率参数，用于计算两个连续到达事件之间的时间， 或者</li>
+		<li>一个<code>arrivalRecurrence</code> 用于计算到达事件重现的到达再现方法（通常是随机变量）。</li>
+	</ol></li>
+</ol>
+<p>如果既没有定义 <code>arrivalRate</code> 也没有定义 <code>arrivalRecurrence</code> 方法，则事件率为1的指数分布将用作默认重复。</p>
+
+<p>入口节点具有内置（只读）统计属性<code>nmrOfArrivedObjects</code> ，用于计算到达给定入口节点的对象数。</p>
+</section>
+
+<section><h1>高级功能</h3>
+
+<p>一个入口节点应该包括：</p>
+
+<ol><li>一个<code>outputType</code> 槽，用于定义自定义输出类型（而不是默认的<code>pROCESSINGoBJECT</code>输出类型）;</li>
+	<li>一个<code>onArrival</code> 事件规则方法，用于定义特定状态更改或调度特定后续事件。</li>
+</ol>
+</section>
+</section>
+
+<section><h1>处理节点</h2>
+
+<p>处理节点由参与<b>处理活动</b>的<b>处理器对象</b>组成（通过扮演actor的特殊资源角色）。 处理节点的定义组合了定义处理器对象（作为<em>actor</em>）和相关的隐式活动类型。 可以被建模为处理节点的对象的示例是：服务台，自动柜员机和制造机器。</p>
+
+<section><h1>基本功能</h3>
+
+<p>处理节点具有用于传入处理对象的输入队列。 处理节点的定义可以包括：</p>
+
+<ol><li>一个<code>successorNode</code> 属性，用于分配处理对象路由到的后继节点;</li>
+	<li>一个<code>capacity</code> 属性，用于将一次处理的处理对象的数量设置为大于1的数字，这是默认值;</li>
+	<li>或者
+	<ol><li>一个<code>fixedDuration</code> 属性，用于将节点处理活动的持续时间设置为固定值，或者</li>
+		<li>一个<code>randomDuration</code> 方法，用于将节点处理活动的持续时间的随机变化建模为随机变量。</li>
+	</ol></li>
+</ol>
+
+<p>如果既未定义<code>fixedDuration</code> 也没有定义<code>randomDuration</code> 方法，则具有可自定义的默认事件率1的指数分布将用作分配处理活动持续时间的默认随机变量。</p>
+
+<p>由于它们是执行活动的参与者，因此会自动为所有处理节点计算利用率统计信息。</p>
+</section>
+
+<section><h1>高级功能</h3>
+
+<p>一个处理节点定义应该包括：</p>
+
+<ol><li>一个<code>inputType</code> 槽，用于定义自定义输入类型，而不是默认的<code>pROCESSINGoBJECT</code>输入类型;</li>
+	<li>一个<code>inputTypes</code> 集合槽，用于在处理节点处理多种类型的输入时定义输入类型;</li>
+	<li>一个<code>outputTypes</code> 集合槽，用于在处理节点将输入转换为输出时定义输出类型;</li>
+	<li>一个<code>onActivityStart</code> 事件规则方法，用于定义特定状态更改或在启动处理活动时调度后续事件;</li>
+	<li>一个<code>onActivityEnd</code> 事件规则方法，用于定义特定状态更改或在处理活动结束时安排后续事件。</li>
+</ol>
+</section>
+</section>
+
+<section><h1>退出节点</h2>
+
+<p>退出节点由退出对象组成，该<b>退出对象</b>参与<b>离开事件</b>，从而导致从模拟中移除离开的处理对象。</p>
+
+<section><h1>基础功能</h3>
+
+<p>退出节点有两个内置统计信息属性：</p>
+
+<ol><li><code>nmrOfDepartedObjects </code>计算在给定出口节点处离开的对象的数量，还有</li>
+	<li><code>cumulativeTimeInSystem </code>用于在系统中累计所有离开的对象的时间。</li>
+</ol>
+</section>
+
+<section><h1>高级功能</h3>
+
+<p>退出节点定义可以包括<code>onDeparture</code>事件规则方法，用于定义特定状态改变或在处理对象离开时调度后续事件。 </p>
+</section>
+</section>
+
+  </main>
+
+  <nav><h1>页面导航</h1>
+    <ul>
+    <li><a href="../index.html">主页</br>Home</a></li>
+    <li><a href="../oes">代理/对象事件模拟</br>A/OES</a></li>
+    <li><a href="../simulations">模拟</br>Simulations</a></li>
+    <li><a href="../reading">教程/文档</br>Tutorials/Articles</a></li>
+    <li><a href="../downloads">下载</br>Downloads</a></li>
+    <li><a href="../faq">常见问题</br>FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+  <footer>
+  <p>根据<a href="https://www.tldrlegal.com/l/mit">MIT License </a>许可证发布</a><br/> 
+     版权所有© 2016-2018 Gerd Wagner 教授 和 M. Diaconescu, 德国勃兰登堡理工大学</p>
+ </footer>
+</body>
+</html>

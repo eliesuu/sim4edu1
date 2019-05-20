@@ -1,0 +1,137 @@
+<!-- ===========================================================================
+ * ServiceDesk-4 - An example of an Object Event Simulation.
+ * @copyright Copyright 2016 Gerd Wagner, BTU (Germany) + ODU (VA, USA)
+ * @author Gerd Wagner
+ * @license The MIT License (MIT)
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="服务台被建模为处理网络的处理节点，该处理网络具有用于到达和离开的客户的入口节点和出口节点。 该模型基于预定义的处理网络概念eNTRYnODE，pROCESSINGnODE和eXITnODE，使得工作对象通过入口节点处的到达事件输入，然后在参与时传递一个或多个处理节点，从而流经系统。 他们的处理活动，最后通过出口节点的离开事件。 模拟场景只是实例化一个入口节点，一个处理节点（'serviceDesk'）和一个出口节点。" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/12/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+ <div id="frontMatter">
+  <h1>基于活动事件的四连续机器模型</h1>
+  <p><strong>分类标签</strong>: 商业运营管理, 离散事件模拟（DES），下一事件时间连续，网络流程模型</p>
+  <figure class="right"><img src="media/img/theme-image.svg" alt="" width="240" /></figure>
+  <section id="shortDescription"></section>
+ </div>
+
+ <section class="mbd collapsed"><h1><span>►</span>概念模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-CM" class="expl"></div>
+
+   <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CIM" class="expl"></div>
+     <p>潜在相关对象类型是:</p>
+<!--
+     <figure class="right-float">
+       <img src="CIM-ObjT.svg" width="450"/>
+       <figcaption>一个概念模型来描述对象类型</figcaption>
+     </figure>
+-->
+     <ol>
+       <li>订单</li>
+       <li>机器</li>
+       <li>输入队列</li>
+       <li>工人</li>
+     </ol>
+     <p>潜在的相关事件类型是:</p>
+     <ol>
+       <li>(订单) 到达</li>
+       <li>订单被推送到队列中</li>
+       <li>机器活动表现（处理步骤）</li>
+       <li>(元件) 离开</li>
+     </ol>
+<!--
+     <p>Both object types and event types, with their participation associations, can be visually described
+       in a UML class diagram, as shown below.</p>
+     <figure>
+       <img src="media/img/CIM.svg" width="600"/>
+       <figcaption>一个概念信息模型描述对象类型和事件类型。</figcaption>
+     </figure>
+-->
+   </section>
+
+   <section>
+     <h1>概念流程模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CPM" class="expl"></div>
+     <table>
+       <caption>事件规则</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>订单到达</td>
+         <td>如果机器忙，那么推送订单进入队列，否则开始一个新的机器活动</td>
+       </tr>
+       <tr>
+         <td>机器活动结束</td>
+        <td>如果有继承机器
+然后转发订单/项目，如果不忙，则开始处理
+否则处理完的订单完成，制造的物品离开;
+如果队列中仍有订单等待，
+然后开始下一个机器活动</td>
+       </tr>
+       </tbody>
+     </table>
+
+<!--
+     <figure>
+       <img src="media/img/CPM.svg" width="600"/>
+       <figcaption>A conceptual process diagram integrating the two 事件规则</figcaption>
+     </figure>
+-->
+   </section>
+ </section>
+
+ <section class="mbd collapsed"><h1><span>►</span>模拟设计模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-DM" class="expl"></div>
+
+   <p>在这个机器仿真场景中，我们将机器建模为<b>对象事件模拟（OES）网络流程</b>，其具有一个在达到事件发生时的前一入口节点，以及一个在离开事件发生时的后续出口节点。
+     </p>
+
+   <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-IDM" class="expl"></div>
+     <p>由于仿真模型完全基于预定义的 <b>网络流程</b> 建模概念包括
+       <code>WorkObject</code>, <code>EntryNode</code>, <code>Arrival</code>, <code>ProcessingNode</code>, <code>ExitNode</code>和 <code>Departure</code>, 因此无需定义任何对象类型或事件类型。</p>
+     <p>初始状态定义包括入口节点，一个处理节点和出口节点，以及初始到达事件。</p>
+   </section>
+   <section><h1>流程设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-PDM" class="expl"></div>
+     <p>由于仿真模型完全基于预定义的 <b>网络流程</b> 建模概念包括
+       <code>WorkObject</code>, <code>EntryNode</code>, <code>Arrival</code>, <code>ProcessingNode</code>, <code>ExitNode</code>和 <code>Departure</code>, 因此无需定义任何事件规则。</p>
+   </section>
+ </section>
+
+ <section class="mbd collapsed"><h1><span>►</span>参见</h1>
+  <section><h1>针对相同系统/问题/域的其他对象事件模拟（OES）模型</h1>
+   <ol>
+     <li><a href="../1/index.html">服务前台-1（ServiceDesk-1）</a>: 具有两个统计信息的服务队列模型（一个服务和一个队列）：<b>最大队列长度</b>和<b>服务利用率</b>。 该模型从个体订单和队列的组成中抽象出来。</li>
+     <li><a href="../2/index.html">服务前台-2（ServiceDesk-2）</a>: 具有一个统计信息的服务队列模型（一个服务和一个队列）：平均响应时间，即客户从到达到离开时在系统中花费的平均时间长度。 为了记录它们的到达时间，单个客户在<i>waitingCustomers</i>队列中明确表示。</li>
+     <li><a href="../3/index.html">服务前台-3（ServiceDesk-3）</a>: 服务队列模型，其中服务被建模为以服务台作为其资源的活动，其自动计算利用率统计信息。</li>
+     <li><a href="../9/index.html">连续服务（ConsecutiveServices）</a>: 一个具有客户等待线的两个连续服务提供商的基于活动的服务队列模型。</li>
+     <li><a href="../11/index.html">网络进程-1（ProcessingNetwork-1）</a>: 一种服务队列模型，其中服务提供者被建模为处理网络内的处理节点（具有输入队列），该处理网络具有用于到达和离开的客户的入口节点和出口节点。 该模型基于预定义的网络进程概念（<i>Processing Network</i>）：WorkObject，Arrival，EntryNode，ProcessingNode和ExitNode，以便工作对象“流经系统”。</li>
+   </ol>
+  </section>
+  <section><h1>使用其他框架实现的类似模型</h1>
+   <ol>
+      <li><a href="http://ccl.northwestern.edu/netlogo/models/community/Queueing_Simulation_Discrete_Event">队列模拟离散事件（Queueing_Simulation_Discrete_Event）</a>: 此NetLogo模拟使用NetLogo的tick-advance原语以非整数量推进仿真时间。 但是，NetLogo的标准刻度显示无法显示非整数值，因此必须编写自定义刻度显示。 版权所有2010，Nick Bennett。</li>
+   </ol>
+  </section>
+ </section>
+</body>
+</html>
+

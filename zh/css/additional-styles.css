@@ -1,0 +1,48 @@
+
+
+/*********************************************
+ Content Styles zh_Hans
+*********************************************/
+body {
+  font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+ line-height:150%; 
+            font-size: 1em;
+}
+main > section {
+   font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  margin-bottom: 0.8em;
+}
+main > section > h1 {
+  font-size: 1em;
+  margin-bottom: 0.2em;
+}
+main > section > section > h1 {
+  font-size: 1em;
+  margin-bottom: 0.2em;
+}
+p {
+  margin-top: 0;
+  margin-bottom: 0.33em;
+  line-height:150%; 
+          text-indent: 2em; 
+            font-size: 1em;
+}
+h1 {
+  font-size: 2em;
+  margin-top: 0;
+  margin-bottom: 0.67em;
+}
+nav > h1,
+aside > h1 {
+   font-size: 1em;
+}
+
+        td{text-align:center;
+            }
+    
+        dd{
+          text-indent: 2em; 
+            }
+	     
+
+        

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - 网格空间模型</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="关于网络空间模型和网络空间模拟仿真实例。"/>
+
+ <link rel="stylesheet" type="text/css" href="../../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/additional-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/area-page.css" />
+ 
+</head>
+<body>
+ <header><img id="logo" src="../../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">网格空间模型</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+		<p>仿真模型可以包括由对象居住的空间的模型。 一种特定类型的空间模型是二维离散欧几里德空间，也称为<b>网格空间</b>。 网格空间模型也可以是一维或三维的，可以被认为是真实空间的简化或抽象。</p>
+		<p>由于其简单性，基于网格空间的仿真模型已经在社会科学模拟中变得流行。 模拟框架NetLogo在社会科学模拟中的广泛采用促成了具有固定增量时间进展的网格空间模型的普及。</p>
+		<p>网格空间仿真模型仍然可以被认为是DES模型，即使它们没有对任何显式事件建模，因为它们的时间步长可以被视为隐式时间事件，类似于其他周期性时间事件，如“每秒”，“每个星期一”， “在工作周结束时”。 时间事件是一类特殊的事件。</p>
+		
+		<p>每当网格空间模型既不模拟对象也不模拟事件，而只基于相邻单元的状态而网格单元状态和网格单元状态发生变化时，可以将其视为元胞自动机（<em>Cellular Automata </em>）模型。</p>
+
+<h2>网格空间模型实例</h2>
+
+<aside style="float:right; width:35%"><h3>元胞自动机实例</h3>
+ <dl>
+   <dt><a href="#">生活的游戏<br/>GameOfLife</a></dt>
+	<dd>生活的游戏是由<a href="http://de.wikipedia.org/wiki/John_Horton_Conway">John Horton Conway</a> 创作，这是一个典范的元胞自动机模型，在二维（环形）网格中使用8邻域（也称为摩尔邻域）的概念，其中一个单元有8个邻居，而不仅仅是N / E / S / W，还有NE / SE / SW / NW。 由于它的抽象性，尽管它的名字，生命的游戏不能被认为是一个真正意义上的模拟模型。 相反，是基于兴趣而将离散数学作为模式生成系统。</dd>
+  </br>
+	<dt><a href="../sims/16">八卦消息模型<br/>Gossip Model</a></dt>
+	<dd>一个关于八卦消息传播的模型。</dd>
+  </br>
+	<dt><a href="https://math.berkeley.edu/~bgillesp/apps/voter/">选民模型<br/>The Voter Model</a></dt>
+	<dd>选民模型是描述图表上的观点动态的概率模型。 每个人口中的成员都有一个观点，由格子中的瓦片颜色表示，他们通过采用随机邻居的意见不时地改变。</dd>
+  </br>
+	<dt><a href="http://beltoforion.de/article.php?a=simulated_evolution&amp;hl=en&amp;s=idPageTop#idPageTop">微生物的进化<br/>Evolution of Microbes</a></dt>
+	<dd>模拟仿真模型代表湖底的一小块。 微生物在屏幕上移动，靠细菌维持声明。 细菌是唯一的能量来源。 微生物的运动由一组基因决定。 在给定的时间步长条件下，基因会控制微生物改变其方向的概率。</dd>
+ </dl>
+</aside>
+
+<dl>
+  <dt><a href="../sims/6">谢林分离模型<br/>Schelling Segregation Model</a></dt>
+	<dd>住宅区由属于某一群体的居民居住。 所有居民都会根据他们对不同群体的容忍程度，定期检查他们是否对他们的邻居满意。 如果他们不满意，则会移动到他们满意的位置，如果他们找不到这样的位置，则会离开该区域。</dd></br>
+	<dt><a href="http://eliaszerrouq.nl/jseco/">草食动物和草<br/>Herbivores and Grass</a></dt>
+	<dd>食草动物放牧行为模拟及其对人口和生态系统的影响。</dd>
+</dl>
+  </main>
+
+  <nav><h1>页面导航</h1>
+    <ul>
+    <li><a href="../index.html">主页</br>Home</a></li>
+    <li><a href="../oes">代理/对象事件模拟</br>A/OES</a></li>
+    <li><a href="../simulations">模拟</br>Simulations</a></li>
+    <li><a href="../reading">教程/文档</br>Tutorials/Articles</a></li>
+    <li><a href="../downloads">下载</br>Downloads</a></li>
+    <li><a href="../faq">常见问题</br>FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+
+  <footer>
+  <p>根据<a href="https://www.tldrlegal.com/l/mit">MIT License </a>许可证发布</a><br/> 
+     版权所有© 2016-2018 Gerd Wagner 教授 和 M. Diaconescu, 德国勃兰登堡理工大学</p>
+ </footer>
+</body>
+</html>

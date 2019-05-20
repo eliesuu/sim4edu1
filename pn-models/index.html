@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - Processing Network Models</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="About Processing Network (PN) models and examples of PN simulation models."/>
+ <link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/area-page.css" />
+</head>
+<body>
+ <header><img id="logo" src="../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">Processing Network Models</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+   <p>In a <em>Processing Network (PN) </em>model, <em><strong>processing objects</strong></em> (representing, e.g., customers or raw materials) enter a system via <strong><em>arrival</em></strong> events at an <strong><em>entry node</em></strong> and then flow through one or more <em><strong>processing nodes</strong></em> (representing, e.g., sevice desks or manufacturing machines) where they are subject to <em><strong>processing activities</strong></em> before they leave the system at an <em><strong>exit node</strong></em> via a <em><strong>departure</strong></em> event.</p>
+
+  <figure style="float:right;">
+   <img src="../img/four-consecutive-machines.svg" style=" width:100%;" alt="four-consecutive-machines" />
+  </figure>
+
+  <p>The concepts of OES-PN modeling are based on the fundamental DES modeling concepts of <em>objects</em>, <em>events</em> and <em>activities</em>. The nodes of a PN model represent modeling elements that are overloaded with two meanings. Both entry and exit nodes combine a (possibly spatial) node object and an associated implicit (arrival or departure) event type, while processing nodes combine a (possibly spatial) node object and an associated implicit activity type. This semantic overloading makes PN models more concise and easier to read and understand.</p>
+
+  <p>Due to its intuitive building blocks and its applicability to problems in the manufacturing and service industries, PN modeling is the most widely used DES modeling paradigm. It is supported by many simulation tools, such as <em>Arena</em>, <em>Simio</em>, <em>ExtendSim</em>, <em>Simul8</em>, and <em>AnyLogic</em>, each of them using their own proprietary terminology and diagram language for the same concepts.</p>
+
+  <p>The OES concepts for PN modeling are an open source alternative to the proprietary PN modeling techniques of these commercial tools, and can be used as a reference conceptual framework for understanding and comparing them.</p>
+
+<table border="1">
+ <caption>Comparison of different terminologies used for the same PN modeling concepts.</caption>
+ <thead>
+   <tr>
+     <th>OES-PN</th>
+     <th>Arena</th>
+     <th>Simul8</th>
+     <th>Simio</th>
+     <th>AnyLogic</th>
+   </tr>
+ </thead>
+ <tbody>
+   <tr>
+     <td><p>Processing Object</p></td>
+     <td><p>Entity</p></td>
+     <td><p>Work Item</p></td>
+     <td><p>Token</p></td>
+     <td><p>Agent</p></td>
+   </tr>
+   <tr>
+     <td><p>Entry Node</p></td>
+     <td><p>Create</p></td>
+     <td><p>Start Point</p></td>
+     <td><p>Source</p></td>
+     <td><p>Source</p></td>
+   </tr>
+   <tr>
+     <td><p>Processing Node</p></td>
+     <td><p>Process </p></td>
+     <td><p>Queue + Activity</p></td>
+     <td><p>Server</p></td>
+     <td><p>Service</p></td>
+   </tr>
+   <tr>
+     <td><p>Exit Node</p></td>
+     <td><p>Dispose</p></td>
+     <td><p>End Point</p></td>
+     <td><p>Sink</p></td>
+     <td><p>Sink</p></td>
+   </tr>
+ </tbody>
+    </table>
+	
+<aside><h2>Examples of Processing Network Models</h2>
+ <dl>
+	<dt><a href="../sims/12/index.html">ServiceDesk-4</a></dt>
+	<dd>A service desk is modeled as a processing node of a processing network that has an entry node and an exit node for arriving and departing customers.</dd>
+	<dt><a href="../sims/11/index.html">ConsecutiveServices-2</a></dt>
+	<dd>The customers of the Department of Motor Vehicles first have to queue up at the reception for their request being recorded. Then they have to wait for a clerk who will handle their case. Both the reception desk and the case handling desk are modeled as processing nodes (with input queues) within a processing network that has an entry node and an exit node for arriving and departing customers.</dd>
+	<dt><a href="../sims/13/index.html">FourConsecutiveMachines-3</a></dt>
+	<dd>A manufacturing company uses a linear assembly line with 4 consecutive machines. The simulation scenario defines an entry node for incoming orders, 4 consecutive processing nodes representing the four machines M1-M4, and an exit node.</dd>
+ </dl>
+</aside>
+
+  <section><h2>Entry Nodes</h2>
+
+   <p>The definition of an entry node combines defining both a (possibly spatial) <em>entrance</em> object and an associated implicit <em>arrival event type</em>. Real world arrival events have at least two participants: the entrance (or arrival point) object and one or more arriving processing objects. Simulated arrival events may have only one participant (the entrance object) in an approach where OOP objects that represent arriving processing objects are created and later (after their departure) destroyed. In any case, the arrived processing objects are either routed to a successor node or placed into an output buffer. Examples of objects that can be modeled as entry nodes are: office or building entrances and mail reception offices.</p>
+
+   <section><h3>Basic Features</h3>
+
+    <p>An entry node object definition may include</p>
+
+    <ol>
+     <li>either
+      <ol><li>an <code>arrivalRate</code> attribute slot for defining the event rate parameter of an exponential probability distribution function used for computing the time between two consecutive arrival events, or</li>
+       <li>an <code>arrivalRecurrence</code> function for computing the recurrence of arrival events (typically, a random variable).</li>
+      </ol></li>
+     <li>an <code>objectsPerArrival</code> attribute slot for defining the number of objects arriving with each arrival event (either a fixed number or a random variable);</li>
+     <li>a <code>maxNmrOfArrivals</code> attribute slot for defining a maximum number of arrival events after which no more arrival events will be created (and, consequently, the simulation may run out of future events and, as a consequence, end);</li>
+     <li>either
+      <ol><li>a <code>successorNode</code> attribute for assigning a fixed successor processing node to which processing objects are routed, or</li>
+       <li>a <code>chooseSuccessorNode</code> function for modeling routing decision logic, or</li>
+       <li>an <code>outputBufferCapacity</code> attribute slot for setting the maximum number of processing objects that may be placed in the output buffer of the node.</li>
+      </ol></li>
+    </ol>
+
+    <p>Entry nodes have a built-in (read-only) statistics attribute <code>nmrOfArrivedObjects</code> counting the number of objects that have arrived at the given entry node.</p>
+    </section>
+
+   <section><h3>Advanced Features</h3>
+
+   <p>An entry node definition may include</p>
+
+   <ol><li>an <code>outputType</code> slot for defining a custom output object type (instead of the default <code>pROCESSINGoBJECT</code> type);</li>
+    <li>an <code>onArrival</code> event rule method for defining specific state changes or scheduling specific follow-up events.</li>
+   </ol>
+   </section>
+  </section>
+
+  <section><h2>Processing Nodes</h2>
+
+   <p>The definition of a processing node combines defining both a node object and an associated implicit type of processing activity. A processing node object normally has an input buffer and may also have an output buffer, when its processing objects are not pushed to, but pulled from, a successor node. Examples of processing node objects are: service desks, automated teller machines and manufacturing machines. A processing activity performed at a processing node object has at least two participants: the node object and one or more processing objects.</p>
+   <p>In addition to the node object, a processing activity may require further resources, such that at least one of them plays an <em>actor</em> role. For instance, when modeling a hospital, an operating room may be modeled as a processing node object and the medical staff members needed for performing the operation are modeled as further resources (in terms of required actor roles). When modeling a manufacturing plant, a workstation may be modeled as a processing node object that plays the role of an actor (possibly jointly with human operators modeled in terms of additional resource roles).</p>
+
+   <section><h3>Basic Features</h3>
+
+   <p>A definition of a processing node may include</p>
+
+   <ol>
+    <li>an <code>inputBufferCapacity</code> attribute slot for setting the maximum number of processing objects that may be placed in the input buffer of the node
+     (may be set to <em>infinity</em>, by default).</li>
+    <li>a <code>processingCapacity</code> attribute slot for setting the number of processing objects that are processed at a time to a number greater than 1, which is the default;</li>
+    <li>either
+     <ol><li>a <code>fixedDuration</code> attribute for setting the duration of the node's processing activities to a fixed value, or</li>
+      <li>a <code>randomDuration</code> function for modeling the durations of the node's processing activities as a random variable.</li>
+     </ol></li>
+    <li>either
+     <ol><li>a <code>successorNode</code> attribute for assigning a fixed successor processing node to which processing objects are routed, or</li>
+      <li>a <code>chooseSuccessorNode</code> function for modeling routing decision logic, or</li>
+      <li>an <code>outputBufferCapacity</code> attribute slot for setting the maximum number of processing objects that may be placed in the output buffer of the node.</li>
+     </ol></li>
+   </ol>
+
+   <p>Utilization statistics may be computed automatically for all processing node objects and other resource objects that participate
+    in the processing activity performed at the node.</p>
+   </section>
+
+   <section><h3>Advanced Features</h3>
+
+   <p>A processing node definition may include</p>
+
+   <ol><li>an <code>inputType</code> slot for defining a custom input type instead of the default <code>pROCESSINGoBJECT</code> input type;</li>
+    <li>an <code>inputTypes</code> collection slot for defining the types of input objects whenever a processing node processes objects of several types;</li>
+    <li>an <code>outputTypes</code> collection slot for defining the types of output objects whenever a processing node transforms input objects of certain types to output objects of certain other types;</li>
+    <li>an <code>onActivityStart</code> event rule method for defining specific state changes or scheduling follow-up events when a processing activity is started;</li>
+    <li>an <code>onActivityEnd</code> event rule method for defining specific state changes or scheduling follow-up events when a processing activity ends.</li>
+   </ol>
+   </section>
+  </section>
+
+  <section><h2>Exit Nodes</h2>
+
+   <p>The definition of an exit node combines defining both a (possibly spatial) exit object and an associated implicit <em>departure event type</em>. Departure events have at least two participants: the exit object and one or more departing processing objects, which may be removed from the simulation after their departure.</p>
+
+   <section><h3>Basic Features</h3>
+
+   <p>Exit nodes have two built-in statistics attributes:</p>
+
+   <ol><li><code>nmrOfDepartedObjects </code>counting the number of objects that have departed at the given exit node, and</li>
+    <li><code>cumulativeTimeInSystem </code> for adding up the times in system (also called <em>cycle times</em>) of all departed objects,
+     such that the <em>average time in system</em> (<em>average cycle time</em>) can be computed at the end of a simulation run.</li>
+   </ol>
+   </section>
+
+   <section><h3>Advanced Features</h3>
+
+   <p>An exit node definition may include an <code>onDeparture</code> event rule method for defining specific state changes or scheduling follow-up events when a processing object departs.</p>
+   </section>
+  </section>
+ </main>
+
+  <nav>
+   <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../oes/index.html" title="Agent/Object Event Simulation">A/OES</a></li>
+    <li><a href="../simulations/index.html">Simulations</a></li>
+    <li><a href="../reading/index.html">Tutorials/Articles</a></li>
+    <li><a href="../downloads/index.html">Downloads</a></li>
+    <li><a href="../faq/index.html" title="Frequently Asked Questions">FAQ</a></li>
+   </ul>
+  </nav>
+ </div>
+
+  <footer>
+   <p>Copyright © 2016-2018 G. Wagner, M. Diaconescu and L.G. Nardin, Brandenburg University of Technology, Germany</p>
+  </footer>
+</body>
+</html>

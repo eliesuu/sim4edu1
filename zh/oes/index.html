@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - 对象事件建模和模拟</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="关于对象事件建模和模拟仿真, 一个普遍的离散事件模拟仿真方法。"/>
+
+ <link rel="stylesheet" type="text/css" href="../../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/additional-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/area-page.css" />
+ 
+</head>
+<body>
+ <header><img id="logo" src="../../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">对象事件建模和模拟</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+	<aside>
+	 <h3>专题论文</h3>
+	 <dl style="padding-left:0"><dt>对象事件建模</br>（OEM）</dt>
+		<dd>Gerd Wagner教授.<a href="https://articles.jsime.org/1/1/">《仿真模拟信息和建模处理》 第一章：对象和事件</a><em>仿真模拟工程学刊1：1，2018</em>。</br>（<a href="https://articles.jsime.org/1/1/">Information and Process Modeling for Simulation – Part I: Objects and Events</a>. <em>Journal of Simulation Engineering</em> 1:1, 2018.）</dd>
+    </br>
+		<dt>对象事件模拟</br>（OES）</dt>
+		<dd>Gerd Wagner教授. <a href="https://www.informs-sim.org/wsc17papers/includes/files/056.pdf">《离散事件仿真的抽象状态机语义》</a>. <em>《2017年冬季模拟会议论文集》</em>. In: W. K. V. Chan et al (Eds.). Piscataway, NJ: IEEE.</br>（<a href="https://www.informs-sim.org/wsc17papers/includes/files/056.pdf">An Abstract State Machine Semantics For Discrete Event Simulation</a>. <em>Proceedings of the 2017 Winter Simulation Conference</em>. In: W. K. V. Chan et al (Eds.). Piscataway, NJ: IEEE.）</dd>
+    </br>
+		<dt>代理/对象事件建模和模拟</br>（A/OEM&amp;S）</dt>
+		<dd>Gerd Wagner教授 和 Luis G. Nardin. <a href="https://oxygen.informatik.tu-cottbus.de/publications/wagner/WSC2018-AgentConcepts.pdf">《添加代理概念到对象事件建模和仿真中》</a>. <em>《2018年冬季模拟会议论文集》</em>. In: M. Rabe et al (Eds.). Piscataway, NJ: IEEE.</br>（<a href="https://oxygen.informatik.tu-cottbus.de/publications/wagner/WSC2018-AgentConcepts.pdf">Adding Agent Concepts to Object Event Modeling and Simulation</a>. <em>Proceedings of the 2018 Winter Simulation Conference</em>. In: M. Rabe et al (Eds.). Piscataway, NJ: IEEE.）</dd>
+	 </dl>
+	</aside>  
+<p>对象事件建模和仿真（OEM＆S）是一种通用的<b>离散事件仿真</b>范例，它将<b>面向对象</b>的建模与<b>事件调度</b>范例相结合。 在OEM中，系统的状态结构可以使用定义对象和事件类型的UML类图来建模，并且系统的动态建模可以用概念过程模型（可表达的，例如在BPMN中表示）和过程设计模型（可表达的，例如，在<a href="../reading/DPMN.pdf">DPMN</a>）。</p>
+
+<p><b>代理/对象事件模拟（A / OES）</b>是基础对象事件模拟（OES）的扩展，通过添加<b>代理，感知，动作和通信</b>的概念。</p>
+
+<p>Sim4edu目前提供对象事件仿真JavaScript（之后简称<em>OESjs</em>）仿真框架，它是OES范例的JavaScript实现，或者更确切地说，是其语言OESL及其抽象模拟器 <em>Omega-Epsilon-Sigma </em>（ΩEΣ），它支持<b>下一个事件时间进程</b>，如所使用的 离散事件模拟和固定增量时间进展，用于基于<em>NetLogo </em>的社会科学模拟以及连续状态变化模拟。 Sim4edu路线图上的下一个模拟器/框架实现了基于代理的离散事件模拟的<em>A/OES</em>范例，称为<em>A-OESjs</em>。</p>
+
+<p>一个真实的<b></b>>离散事件系统</b>（或<b>离散动态系统</b>）包括：</p>
+
+<ul>
+	<li>某些类型的对象，其状态可能会被更改</li>
+	<li>在一组离散时间点的某个时间点发生的事件（某些类型）。</li>
+</ul>
+
+<p>这意味着为了使用OES对离散事件系统进行建模，我们必须这样做</p>
+
+<ol>
+	<li>描述其<b>对象类型</b>和<b>事件类型</b>。</li>
+	<li>对于任何事件类型，指定负责对象状态更改和后续事件的因果规律由该类型的事件触发。 事件规则捕获因果规律。</li>
+</ol>
+
+<p>OES语言（OESL）允许定义：</p>
+
+<ol>
+	<li>对象的形式的对象类型（面向对象的语言，如UML或JavaScript），</li>
+	<li>对象的形式的事件类型，以及它们的事件规则，在相应的事件类中以特殊的onEvent方法的形式。</li>
+</ol>
+
+<p>OESL 是 <a href="https://oxygen.informatik.tu-cottbus.de/aors/ERSL.html">ERSL</a>历史继承者, 因为OES范式是作为早期研发项目 （<a href="http://oxygen.informatik.tu-cottbus.de/aor/?q=node/24"><b>实体 - 关系建模和模拟</b></a>）。 同样, A/OESL 是<a href="https://oxygen.informatik.tu-cottbus.de/aors/AORSL.html">AORSL</a>的及争着, 因为A / OES范式已经发展成为早期研发项目 <a href="http://oxygen.informatik.tu-cottbus.de/aor/"><b>称为代理 - 对象 - 关系模拟</b></a>。
+<p>在OES中，区分了两类模拟事件：</p>
+
+<ol>
+	<li>由于模拟模型外部的因素，周期性地发生<b>外部事件</b>。 它们的重现模式以<b>递归</b>函数的形式建模。</li>
+	<li><b>引发事件</b>是由其他模拟事件引起的模拟事件。</li>
+</ol>
+
+<p>一个 OES<b>场景</b>包括：</p>
+
+<ul>
+	<li>一个<b>OES模型</b>定义<p>对象类型</p>和<p>事件类型</p>（带有<b>事件规则</b>），以及输出统计信息。 它可能包括<b>空间模型</b>定义。</li>
+	<li><b>模拟参数</b>定义，如模拟的长度或随机数生成器的种子。</li>
+	<li>一个初始状态定义。</li>
+</ul>
+
+<p>一个OES模型可以包括的定义：</p>
+
+<ul>
+	<li>对象类型</li>
+	<li>具有<b>事件规则</b>的<b>事件类型</b>，用于定义状态更改和后续事件的原因</li>
+	<li>一个<b>时间模型</b>：离散或连续时间</li>
+	<li>一个<b>空间模型</b>，例如网格空间或2D / 3D连续空间</li>
+	<li>统计变量</li>
+	<li><b>全局模型变量</b>和/或<b>函数</b></li>
+</ul> 
+
+<p>可以配置OES场景模拟</p>
+
+<ul>
+	<li>一个<b>可视化</b>定义（如2D空间模型的3D可视化）</li>
+	<li>一个用于制作模拟游戏的<b>用户交互</b>定义</li>
+	<li>各种<b>用户界面（UI）</b>定义，例如， 用于定义初始状态的UI或用于定义可视化形式的UI</li>
+</ul>
+
+  </main>
+
+  <nav><h1>页面导航</h1>
+    <ul>
+    <li><a href="../index.html">主页</br>Home</a></li>
+    <li><a href="../oes">代理/对象事件模拟</br>A/OES</a></li>
+    <li><a href="../simulations">模拟</br>Simulations</a></li>
+    <li><a href="../reading">教程/文档</br>Tutorials/Articles</a></li>
+    <li><a href="../downloads">下载</br>Downloads</a></li>
+    <li><a href="../faq">常见问题</br>FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+  <footer>
+  <p>根据<a href="https://www.tldrlegal.com/l/mit">MIT License </a>许可证发布</a><br/> 
+     版权所有© 2016-2018 Gerd Wagner 教授 和 M. Diaconescu, 德国勃兰登堡理工大学</p>
+ </footer>
+</body>
+</html>

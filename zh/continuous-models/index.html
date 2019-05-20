@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - 连续模拟</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="关于连续仿真和连续仿真实例" />
+<link rel="stylesheet" type="text/css" href="../../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/additional-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/area-page.css" />
+</head>
+<body>
+ <header><img id="logo" src="../../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">连续模拟</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+    <p>在<b>连续</b>模拟仿真中，对象的状态连续变化，正如由微分方程所建模的连续模拟仿真，且使用<b>固定增量</b>时间进展。连续动态系统（如物质系统中物质对象在空间中移动）只能通过连续仿真模型捕获，而离散动态系统（如捕食者 - 猎物生态系统）可以通过连续仿真模型以更抽象的方式捕获（如<a href="https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations">Lotka-Volterra</a>方程）或离散事件模拟模型以更现实的方式（从出生，死亡和捕食者 - 猎物遭遇是离散事件）。</p>
+   <p>请注意，连续模拟的概念不需要使用连续时间模型和连续空间模型，也不需要使用连续状态变量（具有浮点数范围的属性），尽管在描述具有连续性的连续动态系统时仿真模型很自然地使用连续时间和空间模型以及具有浮点数范围的属性来表示连续状态变量。</p>
+   <p>总结：<b>连续模拟</b>中的术语“连续”并不是指基础时间和空间模型，也不是指状态变量的范围。相反，它仅指状态变化的性质，因此我们也可以称之为<b>连续状态变化模拟</b>。</p>
+   <p>
+借助微分方程对<b>离散</b>动力系统建模的方法称为系统动力学。支持<b>动态系统</b>的基于网络的仿真平台是I<a href="https://insightmaker.com/">Insight Maker</a>。任何系统动力学建模框架也可用于建模连续动态系统，如物理系统。然而，系统动力学的典型应用领域是生物学和社会科学，其中系统本质上是离散的。</p>
+   <h2>系统动态模型举例</h2>
+   <p>请注意，对于所有典型的系统动力学示例，我们还可以使用离散事件仿真模型（通常称为“基于代理”或“基于个体”模型，因为它不是基于建模聚合，而是基于对个体建模）。</p>
+   <dl>
+    <dt><a href="https://insightmaker.com/insight/42408/Predator-Prey-Lotka-Volterra-Model">捕食者模型（Predator-Prey Model）</a></dt>
+    <dd>基于Lotka-Volterra 方程。</dd>
+    <dt><a href="https://insightmaker.com/insight/2944/SIR-Model">易感染 - 感染 - 恢复（SIR）疾病模型（Susceptible-Infected-Recovered (SIR) Disease Model）</a></dt>
+    <dd>一种流行病学模型，用于计算随着时间推移在封闭人群中感染传染病的个体的理论数量。另请参见<a href="../sims/25/index.html">离散SIR模型。</a></dd>
+    <dt><a href="https://insightmaker.com/insight/1954/The-World3-Model">World3</a></dt>
+    <dd>一个<b>系统动力学模型</b> ，用来描述人口，工业增长，粮食生产与地球生态系统限制之间的相互作用。使用<a href="https://insightmaker.com/">Insight Maker</a>重建。最初归功于<b>罗马俱乐部“Club of Rome”</b>，请参阅<a href="https://en.wikipedia.org/wiki/The_Limits_to_Growth">“增长的极限”The Limits to Growth</a>。</dd>
+   </dl>
+   <h2>物理模拟仿真模型举例</h2>
+ <dl>
+  <dt><a href="../sims/15">太阳系系统<br/>Solar System</a></dt><dd>纯粹使用CSS（使用3D动画）实现。</dd>
+      <br/>
+      <dt><a href="https://29a.ch/sandbox/2010/galaxy/">银河系<br/>Galaxy</a></dt><dd> 拥有5000颗恒星的螺旋星系（作者：Jonas Wagner，2010-08-18）。</dd>
+      <br/>
+	<dt><a href="http://af.id.au/cloth/about.html">衣服模拟<br/>Cloth Simulation</a></dt>
+	<dd></dd>
+  <br/>
+	<dt><a href="http://pmneila.github.io/jsexp/massspring/">质量弹簧物理学<br/>Mass-Spring Physics</a></dt>
+	<dd></dd>
+ </dl>
+
+ </main>
+
+  <nav><h1>页面导航</h1>
+    <ul>
+    <li><a href="../index.html">主页</br>Home</a></li>
+    <li><a href="../oes">代理/对象事件模拟</br>A/OES</a></li>
+    <li><a href="../simulations">模拟</br>Simulations</a></li>
+    <li><a href="../reading">教程/文档</br>Tutorials/Articles</a></li>
+    <li><a href="../downloads">下载</br>Downloads</a></li>
+    <li><a href="../faq">常见问题</br>FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+  <footer>
+  <p>根据<a href="https://www.tldrlegal.com/l/mit">MIT License </a>许可证发布</a><br/> 
+     版权所有© 2016-2018 Gerd Wagner 教授 和 M. Diaconescu, 德国勃兰登堡理工大学</p>
+ </footer>
+</body>
+</html>

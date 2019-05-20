@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - 模拟模型概览</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="不同类型的模拟仿真及其执行实例。"/>
+
+ <link rel="stylesheet" type="text/css" href="../../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/additional-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/area-page.css" />
+ 
+</head>
+<body>
+ <header><img id="logo" src="../../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">尝试运行模拟</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+    <section><h1>离散事件模拟</h1>
+
+    <p>...是将现实世界系统的计算模型设想为<b>离散动态系统</b>，通过在状态变量的帮助下，来表示它们的状态（以对象类型的属性的形式），并通过它们的状态变化来建模事件，以此来来捕获它们的<b>动态</b>。 通常，他们使用<b>下一事件</b>时间进展（与<b>固定增量</b>时间进展相反）。</p>
+
+    <p>前往  <a href="../des-models">离散事件模拟</a>.</p>
+    </section>
+
+    <section><h1>处理网络模型</h1>
+
+    <p>...是一类重要的离散事件模拟，其中对象通过<b>入口节点处</b>的<b>到达</b>事件进入系统，然后流经一个或多个<b>处理节点</b>（代表例如服务台或制造机器），在那里它们受到处理，然后在<b>退出节点处</b>，通过<b>离开</b>事件离开系统离开系统之前的活动。 这些模型是大多数商业模拟工具的焦点，例如<em>Arena</em>, <em>Simio</em> and <em>AnyLogic</em>。</p>
+
+    <p>前往  <a href="../pn-models">处理网络模型</a>.</p>
+    </section>
+
+    <section><h1>网格空间模拟</h1>
+
+    <p>...在社会科学中被广泛使用，并且通常使用模拟编程框架<a href="http://ccl.northwestern.edu/netlogo/index.shtml">NetLogo</a>来实现。 他们使用二维离散欧几里得空间（称为<b>网格空间</b>）来可视化模拟运行。 通常，它们使用<b>离散</b>模拟时间和<b>固定增量</b>时间进展（与<b>下一事件</b>时间进展相反）。 网格空间模型既不定义对象也不定义事件，而是基于相邻小区的状态仅网格单元状态和网格单元状态变化，可以被认为是元胞自动机模型（<em><strong>Cellular Automata</strong></em>）。</p>
+
+    <p>前往  <a href="../gridspace-models">网格空间模拟</a>.</p>
+    </section>
+
+    <section><h1>基于代理模拟</h1>
+
+    <p>Sim4edu支持开发中...</p>
+    </section>
+
+    <section><h1 id="ContSim">基于代理模拟</h1>
+
+    <p>...主要用于科学和工程。 他们模拟物体和物质的空间结构和<b>连续</b>状态变化。 它们使用具有<b>固定增量</b>时间进展的连续模拟时间。</p>
+
+    <p>前往  <a href="../continuous-models">连续模拟模型</a>.</p>
+    </section>
+
+  </main>
+
+  <nav><h1>页面导航</h1>
+    <ul>
+    <li><a href="../index.html">主页</br>Home</a></li>
+    <li><a href="../oes">代理/对象事件模拟</br>A/OES</a></li>
+    <li><a href="../simulations">模拟</br>Simulations</a></li>
+    <li><a href="../reading">教程/文档</br>Tutorials/Articles</a></li>
+    <li><a href="../downloads">下载</br>Downloads</a></li>
+    <li><a href="../faq">常见问题</br>FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+  <footer>
+  <p>根据<a href="https://www.tldrlegal.com/l/mit">MIT License </a>许可证发布</a><br/> 
+     版权所有© 2016-2018 Gerd Wagner 教授 和 M. Diaconescu, 德国勃兰登堡理工大学</p>
+ </footer>
+</body>
+</html>

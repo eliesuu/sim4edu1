@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - 离散事件模拟</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="关于离散事件 (DES) 和离散事件模型。" />
+ <link rel="stylesheet" type="text/css" href="../../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/additional-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../../css/area-page.css" />
+</head>
+<body>
+ <header><img id="logo" src="../../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">离散事件模拟</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+<p class="smallprint"><b>离散事件模拟</b><em>Discrete Event Simulation (DES)</em> 已被建立为包含各种计算机模拟方法的总称，所有这些都基于一个想法，构建一个现实世界系统的计算机模型，该系统的构思是作为一个<b>离散动态模型</b>，通过状态变量的帮助，来表达其状态，并通过建模负责其状态变化的事件来建模其动态。</p>
+
+<p class="smallprint">然而，没有普遍接受的DES定义。相反，存在许多不同的DES形式（如<em>Petri</em>网，状态图，事件图或离散事件系统规格<em>DEVS</em>），并且存在不同的离散事件模拟（DES）的模拟工具/框架。他们中的许多人（如<em>Arena</em>, <em>Simio</em> 和<em>AnyLogic</em>）都基于<a href="../pn-models">处理网络</a>（PN）范例，其中处理对象进入系统（在<b>入口</b>节点处），然后受到在相应处理时执行的许多<b>处理活动</b>的影响。节点在离开系统之前（在<b>出口</b>节点处）使用某些资源。在许多教科书和教程中，DES与PN范式相混淆。但是，PN范例不是一般的DES方法，因为它仅限于可以建模为处理网络（例如生产线或服务提供网络）的问题。但是许多其他离散事件系统，例如库存系统，商业企业，消费者市场或社会技术系统，如电梯或道路交通，并不对应于处理网络。</p>
+
+<h2>具有下一事件时间进程的DES模型实例</h2>
+
+<aside><h1>处理网络模型</h1>
+ <dl>
+  <dt><a href="../../sims/12/index.html?lang=zh-Hans">服务前台-4</br>ServiceDesk-4</a></dt>
+  <dd>一个服务前台被建模为处理网络的处理节点，其具有用于到达和离开的客户的入口节点和出口节点。</dd>
+  <dt><a href="../../sims/11/index.html?lang=zh-Hans">连续服务-2</br>ConsecutiveServices-2</a></dt>
+  <dd>机动车部的客户首先必须在接待处排队，以便记录他们的请求。 然后他们必须等待一个能处理他们案件的职员。 接待台和案例处理台都被建模为处理网络内的处理节点（具有输入队列），该处理网络具有用于到达和离开的客户的入口节点和出口节点。</dd>
+  <dt><a href="../../sims/13/index.html?lang=zh-Hans">四连续机器-3</br>FourConsecutiveMachines-3</a></dt>
+  <dd>制造公司使用具有4个连续机器的线性装配线。 模拟场景定义了传入订单的入口节点，表示四个机器M1-M4的4个连续处理节点和出口节点。</dd>
+ </dl>
+</aside>
+
+<p>以下实例模型基于对象事件模拟（OES）。</p>
+
+<dl><dt><a href="../../sims/4/index.html?lang=zh-Hans">存货管理</br>Inventory Management</a></dt>
+	<dd>一个库存管理系统,以再订货点为基础,可以实现连续补货决策。</dd>
+  </br>
+	<dt><a href="../../sims/1/index.html?lang=zh-Hans">服务前台-1</br>ServiceDesk-1</a></dt>
+	<dd>具有两个统计信息的排队系统模型（一个服务和一个队列）：最大队列长度和服务利用率。 该模型包括一个对象类型：<em>ServiceDesk</em>和两种事件类型：<em>CustomerArrival</em> 和 <em>CustomerDeparture</em>，从个别客户和队列组成中抽象出来，仅根据其长度表示。</dd>
+  </br>
+	<dt><a href="../../sims/2/index.html?lang=zh-Hans">服务前台-2</br>ServiceDesk-2</a></dt>
+	<dd>一个具有统计功能的排队系统模型（一个服务和一个队列）：客户从到达到离开在系统中花费的平均时间长度。 为了记录他们的等待时间，需要将各个客户表示为实体/对象。 该模型包括两种对象类型： <em>ServiceDesk</em>和<em>Customer</em>，以及两种事件类型：<em>CustomerArrival</em> 和 <em>CustomerDeparture</em>。</dd>
+  </br>
+	<dt><a href="../../sims/3/index.html?lang=zh-Hans">服务前台-3</br>ServiceDesk-3</a></dt>
+	<dd>一个排队系统模型，将服务建模为服务台作为其资源的活动，以便自动计算服务台利用率统计信息。 该模型包括一个对象类型：<em>ServiceDesk</em>，一个事件类型：em>CustomerArrival</em>和一个活动类型：<em>PerformService</em>。</dd>
+  </br>
+	<dt><a href="../../sims/9/index.html?lang=zh-Hans">连续服务</br>ConsecutiveServices</a></dt>
+	<dd>基于活动的两个连续服务台与等候线的模型。 两种类型的服务都被建模为活动类型，以便自动计算利用率统计信息。 该模型包括一个对象类型：<em>ServiceDesk</em>，一个事件类型：<em>CustomerArrival</em>，以及两个活动类型：<em>Reception</em>和<em>CaseHandling</em>。</dd>
+  </br>
+	<dt><a href="../../sims/10/index.html?lang=zh-Hans">得来速</br>DriveThru</a></dt>
+	<dd>一个基于R.G.Ingalls 的<a href="http://www.informs-sim.org/wsc08papers/005.pdf">模拟导论（<em>Introduction to Simulation</em>）</a>的餐馆驾车模型，该导论是<b>2008年冬季模拟大会</b>上的一个教程。 得来速（<em>Drive thru</em>） 被建模成一个系统，在具有队列的服务节点上执行三个订单处理活动：菜单板上的订单，厨房的订单准备和取件窗口的订单取件。 该模型包括四种对象类型： <em>MenuBoard</em>, <em>Kitchen</em>, <em>PickupWindow</em> 和 <em>Customer</em>，一种事件类型：<em>CustomerArrival</em>，以及三种活动类型：<em>OrderTaking</em>, <em>OrderPreparation</em> 和 <em>OrderPickup</em>。</dd>
+  </br>
+	<dt><a href="../../sims/17/index.html?lang=zh-Hans">柠檬状态游戏（第一版）</br>Lemonade Stand Game (Version 1) </a></dt>
+	<dd>柠檬水是一家制造公司，根据需求预测执行日常生产。</dd>
+  </br>
+	<dt><a href="../../sims/18/index.html?lang=zh-Hans">柠檬状态游戏（第二版）</br>Lemonade Stand Game (Version 2)</a></dt>
+	<dd>柠檬水是一家以天气条件为主导的单一合作市场的制造公司。 此仿真示例附带一个观察用户界面（UI），可提供模拟运行的可视化，以及允许使用模拟的用户交互UI。</dd>
+  </br>
+	<dt><a href="#">MIT啤酒游戏</br>The MIT Beer Game</a></dt>
+	<dd>(更新中)</dd>
+  </br>
+	<dt><a href="../../sims/20/index.html?lang=zh-Hans">伦尼克基准线经济模拟</br>Lengnick's Baseline Economy</a></dt>
+	<dd>Lengnick的基线经济仅由两类经济参与者组成：家庭扮演员工和消费者的角色，公司扮演雇主和生产者的角色。 所有公司都生产和销售由家庭购买（和消费）的相同抽象消费品。 家庭和企业的数量是固定的（既没有人口增长也没有收缩）。 家庭不会因饥饿而<q>死亡</q>。 当他们的收入减少时，他们通过减少消费来适应。 公司不会破产。 当他们的流动性减少时，他们会通过削减工资来适应。 每天生产和购买消费品，而每月购买劳动力。 家庭只从有限数量的公司购买消费品，这些公司是他们的首选供应商，他们不断更新。 消费支出随个人财富增加而增加，但处于衰退状态。 家庭最多雇用一家公司，即雇主。 他们不断寻找支付更高工资的雇主。</dd>
+</dl>
+  </main>
+
+  <nav><h1>页面导航</h1>
+    <ul>
+    <li><a href="../index.html">主页</br>Home</a></li>
+    <li><a href="../oes">代理/对象事件模拟</br>A/OES</a></li>
+    <li><a href="../simulations">模拟</br>Simulations</a></li>
+    <li><a href="../reading">教程/文档</br>Tutorials/Articles</a></li>
+    <li><a href="../downloads">下载</br>Downloads</a></li>
+    <li><a href="../faq">问答</br>FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+
+  <footer>
+  <p>根据<a href="https://www.tldrlegal.com/l/mit">MIT License </a>许可证发布</a><br /> 
+     版权所有© 2016-2018 Gerd Wagner 教授 和 M. Diaconescu, 德国勃兰登堡理工大学</p>
+ </footer>
+</body>
+</html>

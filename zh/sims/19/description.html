@@ -1,0 +1,153 @@
+<!-- ===========================================================================
+ * InventoryManagement - An example of an Object Event Simulation.
+ * @copyright Copyright 2016 Gerd Wagner, BTU (Germany) + ODU (VA, USA)
+ * @author Gerd Wagner
+ * @license The MIT License (MIT)
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>OESjs - 具有定期审查政策的库存管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="<p>该模型为单个产品商店定义了库存管理系统，并具有定期审核补货政策。 为简单起见，通过将所有订单聚合成每日需求事件，以抽象方式处理客户订单，使得每日订单数量的随机变化由随机变量建模。</p><p>同样地，交货提前期的随机变化，即补货订单和相应交货之间的时间，由随机变量建模。</p>" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/19/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+ <div id="frontMatter">
+   <h1>具有定期审查政策的库存管理</h1>
+  <p><strong>分类标签</strong>: 商业运营管理, 离散事件模拟（DES），下一事件时间连续</p>
+  <figure class="right"><img src="media/img/theme-image.svg" alt="" width="240" /></figure>
+  <section id="shortDescription"></section>
+ </div>
+
+ <section class="mbd collapsed"><h1><span>►</span>概念模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-CM" class="expl"></div>
+
+   <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CIM" class="expl"></div>
+
+     <p>潜在相关对象类型是:</p>
+     <ol>
+       <li>商店</li>
+       <li>产品</li>
+       <li>库存</li>
+       <li>顾客</li>
+       <li>供应商</li>
+       <li>...</li>
+     </ol>
+     <!--
+          <figure class="right-float">
+            <img src="CIM-ObjT.svg" width="450"/>
+            <figcaption>一个概念模型来描述对象类型</figcaption>
+          </figure>
+     -->
+     <p>潜在的相关事件类型是:</p>
+     <ol>
+       <li>顾客订单</li>
+       <li>产品交付</li>
+       <li>顾客付款</li>
+       <li>补货订单</li>
+       <li>送货商</li>
+       <li>向送货商付款</li>
+       <li>...</li>
+     </ol>
+     <p>这些对象和事件类型及其参与关联可以在视觉上描述一个UML类图，如下所示。</p>
+     <figure>
+       <img src="media/img/CIM.svg" width="800"/>
+       <figcaption>一个概念信息模型描述对象类型和事件类型。</figcaption>
+     </figure>
+     <p>如果需求大于当前库存水平，则差异计为丢失销售。每当<b>重新订购间隔</b>过去时，商店就会将补货订单的数量计算为上限（称为<b>目标库存</b>）与当前库存水平之间的差值。</p>
+    </section>
+   <section><h1>概念流程模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CPM" class="expl"></div>
+
+     <table>
+       <caption>事件规则</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>顾客订单</td>
+         <td>...
+         </td>
+       </tr>
+       </tbody>
+     </table>
+   </section>
+ </section>
+ <section class="mbd collapsed"><h1><span>►</span>模拟设计模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-DM" class="expl"></div>
+
+   <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-IDM" class="expl"></div>
+
+     <p>补货订单与相应交货之间的提前期的随机变化由具有1至3天之间的均匀概率分布的随机变量建模。 库存被建模为具有三个属性的对象：库存中的产品数量，重新订购间隔和目标库存。 为简单起见，模型不会创建补货订单事件，而是仅调度相应的交货事件。</p>
+	 <p>因此，我们只模拟一种对象类型：<b> <code> SingleProductShop </code> </b>，具有三个属性
+          <code> quantityInStock </code>（NonNegativeInteger），<code> reorderInterval </code>（PositiveInteger），
+和<code> targetInventory </code>（PositiveInteger）。 另外，我们模拟了两种事件类型：</p>
+     <ul>
+       <li><b> <code> DailyDemand </code> </b>作为具有一个属性的外部事件类型：<code> quantity </code>（PositiveInteger），并使用随机变量函数<code> sampleQuantity </code>，并作为外部事件类型，
+使用<code> recurrence </code>函数。</li>
+        <li> <b> <code> Delivery </code> </b>作为具有一个属性的原因事件类型：<code> quantity </code>（PositiveInteger），并使用随机变量函数<code> sampleLeadTime </code>。</li>
+     </ul>
+     <figure>
+       <img src="media/img/IDM.svg" width="600"/>
+       <figcaption>一个信息设计模型来描述对象类型和事件类型。</figcaption>
+     </figure>
+	 <p>当使用面向对象的编程语言或框架<b> <i> OESjs </i> </b>实现设计模型时，
+<code> DailyDemand </code>和<code> SingleProductShop </code>之间的参与关联，以及
+<code> Delivery </code>和<code> SingleProductShop </code>之间用相应的表示引用属性<code> shop </code>和<code> receiver </code>。 使用对象事件时也是如此，模拟（OES）框架<b> <i> OESjs </i> </b>可从<a href="https://sim4edu.com"> Sim4edu </a>获取，其中所有对象类型都是从预定义的OES类别<code> Object </code>派生而来的，所有事件类型都是从预定义派生的OES类别<code>事件</code>，如下图所示：</p>
+     <figure>
+       <img src="media/img/IDM-OO.svg" width="600"/>
+       <figcaption>一个对象事件仿真（OES）类模型来展示预定义类型 <code>Object</code> and <code>Event</code>.</figcaption>
+     </figure>
+   </section>
+   <section><h1>流程设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-PDM" class="expl"></div>
+
+     <table>
+       <caption>事件规则设计表</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody style="font-size: smaller">
+       <tr>
+         <td>DailyDemand( demQuant) @ t</td>
+         <td>
+<pre>IF demQuant &lt;= shop.quantityInStock
+THEN
+  IF shop.quantityInStock − demQuant &lt; shop.reorderLevel AND
+       shop.quantityInStock > shop.reorderLevel
+  THEN
+    SET ordQuant TO shop.targetInventory −
+          shop.quantityInStock - demQuant
+    SCHEDULE Delivery( ordQuant) @ t + sampleLeadTime()
+  DECREMENT shop.quantityInStock BY demQuant
+ELSE (if demQuant > shop.quantityInStock)
+  INCREMENT shop.lostSales BY demQuant − shop.quantityInStock
+  SET shop.quantityInStock TO 0</pre>
+         </td>
+       </tr>
+       <tr>
+         <td>Delivery( delQuant) @ t</td>
+         <td>INCREMENT shop.quantityInStock BY delQuant</td>
+       </tr>
+       </tbody>
+     </table>
+   </section>
+ </section>
+</body>
+</html>
+

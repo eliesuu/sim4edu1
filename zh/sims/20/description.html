@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+ <head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>OESjs - 伦尼克基准线经济模拟</title>
+ <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+ <meta http-equiv="Content-Language" content="zh-Hans"/>
+ <meta name="description" content="LBE模型基于离散时间，以天为单位。 一个月包含一个StartOfMonth事件，后跟21个EveryDay事件，表示一个月中连续21个工作日，后面跟一个EndOfMonth事件。 除了这三种事件类型之外，模型还包括两种对象类型Household和Firm。 在一个月初，公司调整他们的工资率和消费品价格以及他们的雇员数量，而家庭搜索更便宜的供应商和工作（如果失业）或更好的工作（如果雇用），以及 决定他们的每月消费预算。 每天，家庭购买消费品，企业根据工人数量生产新的消费品。 在一个月末，公司分配利润，支付工资，并决定解雇工人。 家庭收到工资并可能调整他们的预留工资。" />
+ <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/20/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+ </head>
+ <body onload="oes.ui.setupDescription()">
+  <div id="frontMatter">
+    <h1>伦尼克基准线经济模拟</h1>
+    <p>
+      <strong>分类标签</strong>: economics, minimal economy, DES,
+      next-event time progression
+    </p>
+    <figure class="right">
+      <img src="img/theme-image.svg" alt="factory" width="150" />
+    </figure>
+    <section id="shortDescription"></section>
+  </div>
+  <section class="mbd collapsed">
+    <h1>
+      <span>►</span>概念模型 <sup class="expl-req">?</sup>
+    </h1>
+    <div id="expl-CM" class="expl"></div>
+    <p>伦尼克基准线经济模拟（LBE）由两类经济参与者组成：家庭扮演工人/雇员和消费者的角色，企业扮演雇主和生产者/供应者的角色。 家庭的特点是他们的<b>预订工资</b>定义了他们对工资的期望，以及他们的<b>流动性</b>（金额）。 公司的特点是<b>流动性</b>，<b>消费品价格</b>，<b>工资率</b>和<b>库存水平</b>。
+    </p>
+    <p>在一个月初，公司可以调整他们的工资率和消费品价格以及他们的雇员数量，而家庭可以搜索更便宜的供应商和工作（如果失业）或更好的工作（如果雇用）， 以及决定他们的每月消费预算。</p>
+    <p>每天，家庭购买消费品，企业根据工人数量生产新的消费品。</p>
+    <p>在一个月末，公司分配利润，支付工资，并决定解雇工人。 家庭收到工资并可能调整他们的预留工资。</p>
+    <!--
+    <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+      <div id="expl-CIM" class="expl"></div>
+    </section>
+    <section>
+      <h1>
+        概念流程模型 <sup class="expl-req">?</sup>
+      </h1>
+      <div id="expl-CPM" class="expl"></div>
+    </section>
+  -->
+  </section>
+  <section class="mbd collapsed">
+    <h1>
+      <span>►</span>模拟设计模型 <sup class="expl-req">?</sup>
+    </h1>
+    <div id="expl-DM" class="expl"></div>
+    <p>
+     该模型基于离散时间，<b>天</b>作为时间单位。 <b>月</b>包含<b> StartOfMonth </b>事件，后跟21 <b> EveryDay </b>事件，代表一个月中连续21个工作日，后跟<b> EndOfMonth </b>事件。
+    </p>
+    <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+      <div id="expl-IDM" class="expl"></div>
+    <p>
+      该模型由对象类型<b> Household </b>和<b> Firm </b>以及事件类型<b> StartOfMonth </b>，<b> EachDay </b>和<b> EndOfMonth</b>组成的。
+    </p>
+      <p>
+        在<kbd> Firm.js </kbd>和<kbd> Household.js </kbd>中实现的模型的两个对象类型及其相互关联在以下信息设计模型中描述：
+      </p>
+      <figure>
+        <img src="img/IDM-ObjectTypes.svg" width="800" />
+        <figcaption>
+          一个信息设计模型来描述 <i>Firm</i> 和 <i>Household</i>.
+        </figcaption>
+      </figure>
+    </section>
+    <section><h1>流程设计模型 <sup class="expl-req">?</sup></h1>
+      <div id="expl-PDM" class="expl"></div>
+      <p>T.B.D.</p>
+    </section>
+  </section>
+  <section class="mbd collapsed"><h1><span>►</span>OEJs 仿真模型</h1>
+  <p>OEJs仿真模型实现了上面提到的模拟设计模型。 它由两个对象类定义组成，<kbd> Firm.js </kbd>和<kbd> Household.js </kbd>，三个事件类定义，<kbd> StartOfMonth.js </kbd>，<kbd> EachDay .js </kbd>和<kbd> EndOfMonth.js </kbd>，以及<kbd> simulation.js </kbd>文件。 总而言之，OESjs实现有大约1,200行JavaScript代码，而M. Lengnick最初的实现有大约2,100行Java代码。</p>
+  </section>
+  <section class="mbd collapsed"><h1><span>►</span>再现经济学事实和法律</h1>
+    <section><h1>平衡</h1>
+      <p>LBE能够自我组织到一个非常接近一般均衡但显示出实际失业率的国家（现实世界经济显示出更高的失业率，部分原因是结构性失业，而LBE尚未模拟）。 LBE表明，遵循简单行为规则的经济主体之间的相互作用可以导致在总体水平上的几乎完全有效的分配（作为紧急财产）。</p>
+    </section>
+    <section><h1>商业周期</h1>
+	<p>在古典经济学模型中，通常是动态随机一般均衡（<a href=" https://en.wikipedia.org/wiki/Dynamic_ndom machine_general_equilibrium"> DSGE </a>）模型，经验事实通过对经济的外部冲击（技术冲击，成本冲击，新闻冲击等）进行建模，解决了总产量周期性上升和下降（称为<b>商业周期</b>）的问题。 然而，在LBE模型中，商业周期是内生的。</p>
+	<p>商业周期通常被理解为围绕标准宏观经济学趋势的随机偏差。在LBE模型中，由于经济主体的协调失败，它们是从完全就业水平向下的周期性偏差。 在考虑稳定政策时，这种差异至关重要。</p>
+    </section>
+    <section><h1>飞利浦曲线</h1>
+      <p>菲利普斯曲线描述了失业与通货膨胀之间的经验权衡。 参见Lengnick（2013）中的图5。</p>
+    </section>
+    <section><h1>贝弗里奇曲线</h1>
+      <p>贝弗里奇曲线描述了失业和职位空缺之间的经验权衡。 参见Lengnick（2013）中的图5。</p>
+    </section>
+    <section> <h1>企业规模分布的右倾斜</h1>
+     <p>根据[3]和[4]，实证发现企业规模的分布是正确的。参见Lengnick（2013）中的图6。</p>
+    </节>
+    <section> <h1>价格变动频率的右倾斜</h1>
+     <p>根据[7]，价格变化的频率遵循右倾斜分布，中位数在每月9％到12％之间。参见Lengnick（2013）中的图6。</p>
+    </节>
+    <section> <h1>通货膨胀和GDP </h1>
+     <p>根据[8]，当GDP高于趋势时，通货膨胀往往低于趋势，而GDP的增长往往伴随着价格的上涨。参见Lengnick（2013）中的图7。</p>
+    </节>
+    <section> <h1>货币政策</h1>
+     <p>从长远来看（50年及以上）增加货币供应只能产生通货膨胀，对生产水平没有影响。这在例如[6]和[1]中凭经验得到证实。参见Lengnick（2013）中的图8。</p>
+    </section>
+
+    <section><h1>文献参考</h1>
+<ol>
+<li>Berentsen, A., Menzio, G., Wright, R., 2011. Inflation and unemployment in the long run. American Economic Review 101 (1), 371–398.</li>
+<li>Dosi, G., Fagiolo, G., Roventini, A., 2008. The microfoundations of business cycles: an evolutionary, multi-agent model. Journal of Evolutionary Economics
+18, 413–432.</li>
+<li>Gaffeo, E., Delli Gatti, D., Desiderio, S., Gallegati, M., 2008. Adaptive microfoundations for emergent macroeconomics. Eastern Economic Journal 34 (4),
+441–463.</li>
+<li>Delli Gatti, D., Gaffeo, E., Gallegati, M., Giulioni, G., Palestrini, A., 2008. Emergent Macroeconomics. Springer, Milan.</li>
+<li>Delli Gatti, D., Gaffeo, E., Gallegati, M., 2010. Complex agent-based macroeconomics: a manifesto for a new paradigm. Journal of Economic Interaction and
+Coordination 5 (2), 111–135.</li>
+<li>McCandless, G., Weber, W., 1995. Some monetary facts. Federal Reserve Bank of Minneapolis, Quarterly Review 19 (3), 2–11.</li>
+<li>Nakamura, E., Steinsson, J., 2008. Five facts about prices: a reevaluation of menu cost models. The Quarterly Journal of Economics 4, 1415–1464.</li>
+<li>Walsh, C.E., 2010. Monetary Theory and Policy. MIT Press, Cambridge, MA.</li>
+</ol>
+    </section>
+  </section>
+  <section class="mbd collapsed"><h1><span>►</span>相关工作</h1>
+   <ul>
+    <li> <a href="http://eos.cs.princeton.edu/">通过面向对象模拟（EOS）项目的经济学</a>
+      <p>一个开源项目，致力于完整经济的高度结构化模拟。</p> </li>
+     <li> <a href="http://jasss.soc.surrey.ac.uk/12/4/5.html">空间劳动力市场摩擦模型</a>
+      <p>使用能够复制商品和劳动力市场的一系列程式化事实的校准模型，如果旨在提高一般技能的政策措施统一分布在经济中的所有区域或集中，则检查影响的差异程度 在一个特定的地区。</p> </li>
+   <ul>
+  </section>
+</body>
+</html>

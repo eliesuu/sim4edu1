@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - Grid Space Models</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="About grid space models and examples of grid space simulation models."/>
+ <link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/area-page.css" />
+</head>
+<body>
+ <header><img id="logo" src="../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">Grid Space Models</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+		<p>Simulation models may include a model of a space that is inhabitated by objects. One particular type of a space model is the two-dimensional discrete Euclidean space, also called <em>grid space</em>. Grid space models, which may also be one- or three-dimensional, can be considered as simplifications, or abstractions, of the real space.</p>
+		<p>Due to their simplicity, simulation models based on a grid space have become popular in social science simulation. The wide adoption of the simulation framework NetLogo in social science simulation has contributed to the popularity of grid space models with fixed-increment time progression.</p>
+		<p>Grid space simulation models may still be considered DES models, even if they do not model any explicit events because their time steps may be viewed as implicit time events, similar to other periodic time events, like "every second", "each Monday", "at end of business week". Time events are a special category of events.</p>
+		
+		<p>Whenever a grid space model does neither model objects nor events, but only grid cell states and grid cell state changes based on the states of neighbor cells, it may be considered a <em>Cellular Automata</em> model.</p>
+
+<h2>Examples of Grid Space Models</h2>
+
+<aside style="float:right; width:35%"><h3>Examples of Cellular Automata Models</h3>
+ <dl>
+   <dt><a href="#">GameOfLife</a></dt>
+	<dd>The Game of Life by <a href="http://de.wikipedia.org/wiki/John_Horton_Conway">John Horton Conway</a> is a paradigmatic Cellular Automata model, using the concept of 8-neighbourhood (also called Moore neighbourhood) in a two-dimensional (toroidal) grid where a cell has 8 neighbours, not only N/E/S/W, but also NE/SE/SW/NW. Due to its abstractness, and despite its name, the Game of Life cannot be considered a meaningful simulation model. Rather, it's of interest to discrete mathematics as a pattern-generating system.</dd>
+	<dt><a href="../sims/16">Gossip Model</a></dt>
+	<dd>A model about the spreading of gossip.</dd>
+	<dt><a href="https://math.berkeley.edu/~bgillesp/apps/voter/">The Voter Model</a></dt>
+	<dd>The voter model is a probabilistic model describing opinion dynamics on a graph. Members of a population each have an opinion, represented by the colors of tiles in a lattice, which they change from time to time by adopting the opinion of a random neighbor.</dd>
+	<dt><a href="http://beltoforion.de/article.php?a=simulated_evolution&amp;hl=en&amp;s=idPageTop#idPageTop">Evolution of Microbes</a></dt>
+	<dd>The simulation model represents a small patch of a lake bottom. Microbes move across the screen living off a supply of bacteria. The bacteria are the only source of energy. The motion of a microbe is determined by a set of genes. The genes control the probability with wich a microbe will change its direction at a given time step.</dd>
+ </dl>
+</aside>
+
+<dl>
+  <dt><a href="../sims/6">Schelling Segregation Model</a></dt>
+	<dd>A residential area is populated by residents belonging to some group; periodically, all residents check if they are content with their neighborhood, based on their degree of tolerating neighbors of a different group; if they are not, they move to a location where they are content, or leave the area if they don't find such a location.</dd>
+	<dt><a href="http://eliaszerrouq.nl/jseco/">Herbivores and Grass</a></dt>
+	<dd>A simulation of grazing behaviors of herbivores and the effects on their population and the ecosystem.</dd>
+</dl>
+  </main>
+
+  <nav><h1>Navigation</h1>
+   <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../oes" title="Agent/Object Event Simulation">A/OES</a></li>
+    <li><a href="../simulations">Simulations</a></li>
+    <li><a href="../reading">Tutorials/Articles</a></li>
+    <li><a href="../downloads">Downloads</a></li>
+    <li><a href="../faq" title="Frequently Asked Questions">FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+
+  <footer>
+  <p>Released under the <a href="https://www.tldrlegal.com/l/mit">MIT License</a><br /> 
+     Copyright © 2016-2018 Gerd Wagner &amp; Mircea Diaconescu, Brandenburg University of Technology, Germany</p>
+ </footer>
+</body>
+</html>

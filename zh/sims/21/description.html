@@ -1,0 +1,570 @@
+<!-- ===========================================================================
+* 黑手党 simulation model
+*
+* @copyright Copyright 2017-2018 Brandenburg University of Technology, Germany
+* @license The MIT License (MIT)
+* @author Luis Gustavo Nardin
+* @author Gerd Wagner
+* @author Jakub Lelo
+=========================================================================== -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>OESjs - 黑手党交易保护</title>
+ <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+ <meta http-equiv="Content-Language" content="zh-Hans"/>
+ <meta name="description" content="<p>该模型定义了四种对象类型：客户，企业家，黑手党和国家。企业家代表从事生产和销售产品或服务的企业主。他们作出了若干决定：（i）如果与黑手党接洽，是否支付保护费，（ii）向国家报告保护费请求，（iii）报告黑手党对国家的惩罚。 </p> <p>国家代表负责执行反索赔法的机构。它由一组警察组成，可以根据一般调查或特定调查监禁黑手党，这些调查更有可能成功。在警察捕获黑手党后，他们可能会找到有关向该黑手党支付保护费的企业家的信息。然后，国家可以利用这些证据来引起这些企业家的合作。如果获得合作，国家使用收集的信息起诉该黑手党。国家还可以为遭受黑手党惩罚损害的企业家提供财政支持。</p><p>黑手党代表一个覆盖社区的家庭，由黑手党组成，（i）要求企业家提供保护费，（ii）为付费企业家提供保护，以及（iii）惩罚非付费企业家。由于他们是同一个家庭的一部分，他们协调行动。如果企业家接受或拒绝了保护费请求，他们自己决定，但他们做出的每一个决定都会产生后果，无论好坏。如果企业家不付钱，他们将受到惩罚，例如，通过销毁他们的库存。 </p>" />
+ <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/21/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+</head>
+<body onload="oes.ui.setupDescription()">
+  <div id="frontMatter">
+    <h1>黑手党交易保护</h1>
+    <p><strong>分类标签</strong>: 黑手党, 经济学, 有组织犯罪, 离散事件模拟</p>
+    <figure class="right">
+      <img src="media/img/theme-image.png" alt="theme-image" width="295" height="246" />
+    </figure>
+    <section id="shortdescription">
+      <figure class="right">
+        <img src="media/img/InteractionsOverview.png" alt="InteractionsOverview" width="571" height="361" />
+      </figure>
+    </section>
+  </div>
+
+  <section class="mbd collapsed">
+    <h1>
+      <span>►</span>概念模型 <sup class="expl-req">?</sup>
+    </h1>
+    <div id="expl-CM" class="expl"></div>
+
+    <section>
+      <h1>
+        概念信息模型 <sup class="expl-req">?</sup>
+      </h1>
+      <div id="expl-CIM" class="expl"></div>
+
+      <p>潜在相关对象类型是:</p>
+      <ol>
+        <li>企业家</li>
+        <li>黑手党</li>
+        <li>州</li>
+        <li>顾客</li>
+      </ol>
+
+      <p>这些对象在一个共享环境中共存。 每个对象也可能会更改自己的属性，并影响其他对象的属性更改。 他们可以共享有关其属性的信息，也可以共享有关其他对象的信息。 对象操作和通信表示为事件。</p>
+
+      <p>针对黑手党模型识别的相关类型的事件在下表中描述。 这些表显示两个对象之间或仅在一个对象内的事件。 例如，由企业家触发的表企业家 - 客户中的事件将影响客户或仅从他那里获取一些信息。 “事件名称”列描述事件的名称，“事件描述”列简要描述事件执行的逻辑，“触发器”对象列定义生成事件的对象。</p>
+
+      <table>
+        <caption>企业家</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>货品保护</td>
+            <td>新产品保护</td>
+            <td>企业家</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>企业家 - 顾客</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>购买请求</td>
+            <td>客户决定产品数量和购买的企业家。</td>
+            <td>顾客</td>
+          </tr>
+          <tr>
+            <td>购买接受</td>
+            <td>企业家接受或拒绝购买交易。</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>付账</td>
+            <td>客户支付已接受购买的账单交易。</td>
+            <td>顾客</td>
+          </tr>
+          <tr>
+            <td>交易成功</td>
+            <td>企业家将购买的产品交付给客户。</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>交易评估</td>
+            <td>客户将购买交易评估为是否满意。</td>
+            <td>顾客</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>企业家 - 黑手党.</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>保护费需求</td>
+            <td>黑手党从企业家处收取保护费</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>支付保护费的考虑</td>
+            <td>企业家决定是否支付保护费的需求</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>保护费支付</td>
+            <td>企业家支付需求的保护费</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>支付检查</td>
+            <td>黑手党检查企业家是否支付了保护费</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>受益</td>
+            <td>黑手党决定如何使支付了保护费的企业家受益</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>生产加速</td>
+            <td>企业家将在预定义的时间段内增加产量</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>保护费返还</td>
+            <td>企业家收到返回的一部分保护费</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+           <td>惩罚</td>
+             <td>黑手党决定如何惩罚不支付保护费的企业家。</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+             <td>生产惩罚</td>
+             <td>黑手党阻止企业家在预定义的时间段内生产产品。
+            <td>黑手党</td>
+          </tr>
+          <tr>
+             <td>仓库处罚</td>
+             <td>黑手党摧毁了企业家仓库中的部分产品。</td>
+            <td>黑手党</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>州</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>州 付款</td>
+            <td>州增加了在 Fondo di Solidarietà的资源数量</td>
+            <td>州</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>企业家 - 州</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>保护费报告</td>
+             <td>企业家向州政府报告黑手党的保护费需求。 企业家处罚报告企业家报告</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+             <td>惩罚报告</td>
+             <td>企业家向州政府报告黑手党的处罚和对企业造成的损失。</td>
+            <td>企业家</td>
+          </tr>
+
+          <tr>
+             <td>企业家援助</td>
+             <td>州决定是否协助企业家赔偿黑手党造成的损失。</td>
+            <td>州</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>州 - 黑手党</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>一般调查结果</td>
+            <td>州政府定期派出一名警务人员监督企业家的任何黑手党活动。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>官僚活动</td>
+            <td>警务人员进行多项官僚活动，以便将一名黑手党人羁押在审判中。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>具体调查</td>
+            <td>如果州收到企业家的保护费需求报告，则会启动具体调查。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>试验</td>
+            <td>州决定在监禁中监禁或释放黑手党。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>监狱释放</td>
+            <td>州政府在他的监禁期结束时释放黑手党。</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>空闲时间</td>
+            <td>警察可以开始新的调查。</td>
+            <td>州</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h1>
+        概念流程模型 <sup class="expl-req">?</sup>
+      </h1>
+      <div id="expl-CPM" class="expl"></div>
+
+      <table>
+        <caption>企业家</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>货品保护</td>
+            <td>如果企业家的供应链没有受到黑手党的阻碍，而企业家的生产基础设施没有受损，而且有足够的资金，企业家可以生产产品，否则他不能。 如果企业家已经支付了保护费并且受益于黑手党，那么生产速度就会提高。</td>
+            <td>企业家</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>企业家 - 顾客</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>购买请求</td>
+            <td>客户决定产品数量和从中购买的企业家。 此外，客户向选定的企业家发送购买请求。</td>
+            <td>顾客</td>
+          </tr>
+          <tr>
+            <td>购买接受</td>
+            <td>企业家在收到购买请求后，如果仓库中有足够的产品来履行客户购买请求，则确认交易。 如果仓库中没有足够的产品，企业家拒绝交易。</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>付账</td>
+            <td>客户支付最后一笔交易的账单。 企业家的财富增加了。</td>
+            <td>顾客</td>
+          </tr>
+          <tr>
+            <td>交易成功</td>
+            <td>企业家将购买的产品交付给客户。 企业家仓库中的产品数量减少了。</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>交易评估</td>
+            <td>客户评估交易是否满意。 如果客户对交易感到满意，则再次选择同一个企业家的变化会有所增加，否则客户将失去对企业家的信任并减少再次购买他的机会。</td>
+            <td>顾客</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>企业家 - 黑手党.</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>保护费需求</td>
+            <td>黑手党要求保护费来自企业家并等待付款。 保护费的金额根据企业家的当前工资计算。 如果企业家由州监督，则有可能看到并捕获黑手党。 如果被捕获，黑手党将被发送到监护区并且可用黑手党的数量减少。</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>支付保护费的考虑</td>
+            <td>企业家采取两种可能的决定之一，企业家支付或不支付保护费。 如果不支付保护费，企业家会决定是否向州政府报告。</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>保护费支付</td>
+            <td>企业家支付保护费。</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>支付检查</td>
+            <td>黑手党检查企业家是否支付了最后一次保护费请求。 如果是这样，黑手党可能会使企业家受益，否则黑手党可能会惩罚企业家。</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>受益</td>
+            <td>黑手党决定如何使支付保护费的企业家受益。 黑手党通过提高生产速度或返回部分保护费支付而使企业家受益。</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>惩罚</td>
+            <td>黑手党决定如何惩罚没有支付保护费的企业家。 黑手党通过降低生产速度或销毁仓库中的部分产品来惩罚企业家。</td>
+            <td>黑手党</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>州</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>州支付</td>
+            <td>州在 Fondo di Solidarietà增加了资源数量。</td>
+            <td>州</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>企业家 - 州</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>保护费报告</td>
+            <td>企业家向州报告黑手党的保护费要求。 如果有可用的警官，州决定监督企业家（即开始具体调查）。 如果启动具体调查，可用警务人员的人数会减少。</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>惩罚报告</td>
+            <td>企业家向州政府报告黑手党的处罚和对企业造成的损失。 根据生产速度的降低或仓库中的产品是否被销毁，成本的计算方式不同。</td>
+            <td>企业家</td>
+          </tr>
+          <tr>
+            <td>企业家援助</td>
+            <td>州决定是否赔偿企业家因黑手党造成的损失。 州政府补偿企业家的决定取决于Fondo di Solidarietà的资源数量。 因此，只有在Fondo di Solidarietà中有足够的资源时，企业家才会得到补偿。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>普查</td>
+            <td>州政府定期指派一名警官监督企业家的任何黑手党活动。</td>
+            <td>州</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table>
+        <caption>州 - 黑手党</caption>
+        <thead>
+          <tr>
+            <td>事件名称</td>
+            <td>事件描述</td>
+            <td>触发对象</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>普查结果</td>
+            <td>州检查在一般或特定调查期间，警察是否捕获了黑手党。 如果是这样，参与调查的警察就开始了一项官僚活动。 否则，警察在开始另一项调查之前有一些空闲时间。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>官僚活动</td>
+            <td>警察进行了几项官僚活动，这些活动在黑手党审判开始时结束。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>特定调查结束</td>
+            <td>具体调查停止。 如果一个黑手党被捕获，自由黑手党的数量减少，州开始新的官僚活动。 如果没有人被抓获，官员将获得免费。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>审讯</td>
+            <td>州政府决定在监禁中监禁或释放黑手党。 如果州决定释放，则可用黑手党的数量会增加。</td>
+            <td>州</td>
+          </tr>
+          <tr>
+            <td>人员释放</td>
+            <td>州政府在他的刑期结束时释放了一个黑手党。 可用黑手党的数量增加。</td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>空闲时间结束</td>
+            <td>警察可以开始新的调查。</td>
+            <td>州</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <section class="mbd collapsed">
+    <h1>
+      <span>►</span>模拟设计模型 <sup class="expl-req">?</sup>
+    </h1>
+    <div id="expl-DM" class="expl"></div>
+
+    <section>
+      <h1>
+        信息设计模型 <sup class="expl-req">?</sup>
+      </h1>
+      <div id="expl-IDM" class="expl"></div>
+
+      <p>对于所有活动类型，模拟器计算其资源的利用率。</p>
+
+      <figure>
+        <img src="media/img/IDM.svg" width="1000" />
+        <figcaption>描述对象类型和事件类型的信息设计模型。</figcaption>
+      </figure>
+
+      <figure>
+        <img src="media/img/OES.svg" width="1000" />
+        <figcaption>显示预定义类型Object和Event的OES类模型。</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h1>
+        流程设计模型 <sup class="expl-req">?</sup>
+      </h1>
+      <div id="expl-PDM" class="expl"></div>
+
+      <table>
+        <caption>PDM 企业家 - 黑手党</caption>
+        <thead>
+          <tr>
+            <td>ON（事件类型）</td>
+            <td>DO（事件路径）</td>
+            <td>触发对象</td>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>需求保护费</td>
+            <td>SET e TO 企业家 <br> SET m TO 黑手党 <br>
+              SET s TO 州<br> IF (s.entUnderObserv.includes(e.id
+              )&amp;&amp;<br> (rand.uniform()
+              s.seeAndCaptureProb))<br> THEN<br> INCREASE m.numCaptMaf
+              BY 1<br> ELSE<br> INCREASE m.numFreeMaf BY 1<br>
+              SET 保护费ToPay TO parseFloat((m.保护费PayPerc *<br>
+              e.wealth).toFixed(2))<br> IF (保护费ToPay > 1)<br> THEN<br>
+              INCREMENT extortionCounter<br> SCHEDULE EventStart<br>
+              (“ConsiderPay保护费”,this.黑手党, this.企业家, this.州,<br>
+              this.保护费ToPay)@(t+timeForPay保护费Consideration)<br>
+              SCHEDULE EventStart (“CheckPayment”,this.黑手党,<br>
+              this.企业家, this.州,<br>
+              this.保护费ToPay)@(t+timeForPay保护费Consideration)<br> ELSE<br>
+              INCREMENT lostExtortionCounter BY 1<br>
+            </td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>检查支付</td>
+            <td>SET m to 黑手党<br> SET e TO 企业家<br> IF
+              (m.extortionCheck[e.id) == true)<br> IF ((rand.uniform() &lt;
+              m.benefitProb))<br> SCHEDULE EventStart
+              (“Benefit”,this.黑手党, this.企业家,<br>
+              this.保护费ToPay)@(t+timeForBenPun)<br> ELSE<br> INCREASE
+              e.numNoPayments BY 1<br> IF (rand.uniform() &lt;
+              m.punishProb)<br> SCHEDULE EventStart<br>
+              (“Punish”,this.黑手党,this.企业家,this.州)@(t+timeForBenPun)
+            </td>
+            <td>黑手党</td>
+          </tr>
+          <tr>
+            <td>受益</td>
+            <td>SET e TO 企业家<br> SET m TO 黑手党<br> SET
+              randomBenefit TO rand.uniform() >= 0.5<br> IF
+              (randomBenefit == true)<br> SET benefitValue TO parseFloat(
+              (m.保护费BenPerc *<br> 保护费ToPay).toFixed( 2 ) )<br>
+              this.保护费ToPay).toFixed( 2 ) )<br> INCREASE e.wealth BY
+              benefitValue<br> ELSE<br> SET e.fasterProduction TO true
+            </td>
+            <td>黑手党</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+  <section class="mbd collapsed"><h1><span>►</span>参见</h1>
+   <ul>
+    <li><a href="https://en.wikipedia.org/wiki/Gangsters:_Organized_Crime">匪徒：有组织犯罪（Gangsters: Organized Crime）</a>是一款战略游戏，于1998年首次发布。它位于禁酒时代的一个虚构的芝加哥郊区。</li>
+  </section>
+</body>
+</html>

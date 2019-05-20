@@ -1,0 +1,4 @@
+# Rewrite a sims path with a simulation name slug
+#/sims/:simno/*  /sims/:simno  200
+# Rewrite a sims path with a language folder 
+#/:lang/sims/:simno/*  /sims/:simno?lang=:lang  200

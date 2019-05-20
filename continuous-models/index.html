@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - Continuous Simulation</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="About continuous simulation and examples of continuous simulation." />
+ <link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/area-page.css" />
+</head>
+<body>
+ <header><img id="logo" src="../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">Continuous Simulations</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+    <p>In <em>continuous</em> simulations, the states of objects change continuously, as modeled by differential equations,
+     using <em>fixed-increment</em> time progression. Continuous dynamic systems (like physical systems with material objects
+     moving in space) can only be captured by a continuous simulation model, while discrete dynamic systems (like a predator-prey
+     ecosystem) can be captured either in a more abstract manner by a continuous simulation model (like the
+     <a href="https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations">Lotka-Volterra equations</a>)
+     or in a more realistic manner by a discrete event simulation model (since birth, death and predator-prey encounters are
+     discrete events).</p>
+   <p>Notice that the concept of continuous simulation does not require using a continuous time model and a continuous space model,
+    nor does it require using continuous state variables (attributes with a floating-point number range), though when describing
+    a continuous dynamic system with a continuous simulation model it is natural to use a continuous time and space model and
+    attributes with a floating-point number range for representing continuous state variables.</p>
+   <p>Summary: The term "continuous" in <em>continuous simulation</em> does not refer to the underlying time and space models,
+    nor does it refer to the range of state variables. Rather it refers exclusively to the nature of state changes, and we could therefore
+    also speak of <em>continuous state change simulation</em>.</p>
+   <p>The approach of modeling a <em>discrete</em> dynamic system with the help of differential equations has been called <em>System Dynamics</em>.
+    A web-based simulation platform supporting System Dynamics is <a href="https://insightmaker.com/">Insight Maker</a>. Any System Dynamics modeling
+   framework could also be used for modeling continuous dynamic systems such as physical systems. However, typical application domains of
+    System Dynamics are biology and social sciences, where systems are essentially discrete.</p>
+   <h2>Examples of System Dynamics Models</h2>
+   <p>Notice that for all typical System Dynamics examples we could also have a Discrete Event Simulation model (often called "agent-based" or
+    "individual-based" model since not based on modeling aggregates, but rather on modeling individuals).</p>
+   <dl>
+    <dt><a href="https://insightmaker.com/insight/42408/Predator-Prey-Lotka-Volterra-Model">Predator-Prey Model</a></dt>
+    <dd>Based on the Lotka-Volterra equations.</dd>
+    <dt><a href="https://insightmaker.com/insight/2944/SIR-Model">Susceptible-Infected-Recovered (SIR) Disease Model</a></dt>
+    <dd>An epidemiological model that computes the theoretical number of individuals infected with a contagious disease in a closed population over time.
+     See also <a href="../sims/25/index.html">a discrete SIR model</a>.</dd>
+    <dt><a href="https://insightmaker.com/insight/1954/The-World3-Model">World3</a></dt>
+    <dd>A <em>System Dynamics</em> model of the interactions between population, industrial growth, food production
+     and limits in the ecosystems of the Earth. Reconstructed with <a href="https://insightmaker.com/">Insight Maker</a>.
+     Originally due to the <em>Club of Rome</em>, see <a href="https://en.wikipedia.org/wiki/The_Limits_to_Growth">The Limits to Growth</a>.</dd>
+   </dl>
+   <h2>Examples of Physics Simulation Models</h2>
+   <dl>
+    <dt><a href="../sims/15">Solar System</a></dt>
+    <dd>A simulation that is programmed with CSS 3D animations.</dd>
+    <dt><a href="https://29a.ch/sandbox/2010/galaxy/">Galaxy</a></dt>
+    <dd>A spiral galaxy with 5000 stars (by Jonas Wagner, 2010-08-18).</dd>
+    <dt><a href="http://af.id.au/cloth/about.html">Cloth Simulation</a></dt>
+    <dd></dd>
+    <dt><a href="http://pmneila.github.io/jsexp/massspring/">Mass-Spring Physics</a></dt>
+    <dd></dd>
+   </dl>
+ </main>
+
+  <nav>
+   <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../oes/index.html" title="Agent/Object Event Simulation">A/OES</a></li>
+    <li><a href="../simulations/index.html">Simulations</a></li>
+    <li><a href="../reading/index.html">Tutorials/Articles</a></li>
+    <li><a href="../downloads/index.html">Downloads</a></li>
+    <li><a href="../faq/index.html" title="Frequently Asked Questions">FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+
+  <footer>
+   <p>© 2016-2019 G. Wagner, M. Diaconescu und L.G. Nardin, Brandenburgische Technische Universität</p>
+  </footer>
+</body>
+</html>

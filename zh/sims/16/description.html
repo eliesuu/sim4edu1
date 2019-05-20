@@ -1,0 +1,42 @@
+<!-- ===========================================================================
+ * Gossip - An example of a Cellular Autamata Model implemented with Sim4edu.
+ * @copyright Copyright 2016 Gerd Wagner, BTU (Germany) + ODU (VA, USA)
+ * @author Gerd Wagner
+ * @license The MIT License (MIT)
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>OESjs - 八卦消息传播模型</title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="一种元胞自动机，其中每个细胞代表一个可能将八卦传播给他或她的邻居的人（使用邻居的N / E / S / W概念）。 每个单元可以处于两种状态中的任何一种：知道八卦或不知道它，对应于整数网格中的两个整数值1或0。 如果单元格处于状态0，并且它在状态1中具有一个或多个邻居，则对于它们中的每一个，以一定概率将单元格的状态更改为1，否则将其保留为0.如果单元格处于状态1，则 仍然在那个州。" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/16/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+<div id="frontMatter">
+  <section id="shortDescription"></section>
+  <p><strong>分类标签</strong>: 随机, 元胞自动机。</p>
+ </div>
+ <section><h1>模型</h1>
+   <p>The <b>八卦消息传播模型</b> 是元胞自动机，使用N / E / S / W邻域（也称为von Neumann邻域）的概念，其中网格单元具有4个邻居。</p>
+   <section><h1>信息模型</h1>
+     <p>已选择整数网格作为空间模型。 网格单元格具有值0（表示尚未接收到八卦的单元格）或值1（表示已接收到八卦的单元格）。</p>
+   </section>
+   <section><h1>流程模型</h1>
+     <p>模型基于以下两个规则:</p>
+     <ol>
+       <li>如果单元格处于状态0，并且它在状态1中具有一个或多个邻居，则对于它们中的每一个，以一定概率将单元格的状态更改为1，否则将其保留为0。</li>
+       <li>如果单元格处于状态1，则它仍处于该状态。</li>
+     </ol>
+   </section>
+ </section>
+</body>
+</html>
+

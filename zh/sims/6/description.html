@@ -1,0 +1,147 @@
+<!-- ===========================================================================
+ * SchellingSegregationModel-1 - An example of an Object Event Simulation.
+ * @copyright Copyright 2016 Gerd Wagner, BTU (Germany) + ODU (VA, USA)
+ * @author Gerd Wagner
+ * @license The MIT License (MIT)
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="在模拟模型中，作为模拟空间的住宅区由整数网格（整数值的二维阵列）表示，其中“邻域”被定义为由围绕单元的8个相邻单元组成。 单元格的整数值表示占用它的居民的组/类型。" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/6/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+ <div id="frontMatter">
+  <h1>谢林分离模型</h1>
+  <p><strong>分类标签</strong>: 社会科学，网格空间模型，固定增量时间进展。</p>
+   <figure class="right">
+     <img src="img/SchellingSegregationGrid.png" alt="theme-image" width="213" height="213" />
+   </figure>
+  <section id="shortDescription">
+  </section>
+ </div>
+ <section class="collapsed"><h1><span>►</span>背景</h1>
+   <p>2005年诺贝尔经济学奖的共同获得者托马斯·谢林（Thomas C. Schelling）发表了一篇论文，提出了一种关于种族或种族隔离持续存在的理论，尽管环境越来越宽容（“种族隔离的动态模型”，数学杂志） 社会学1，1971，143-186。）。 他建议，即使个人容忍种族多样性，如果他们对当地的少数民族仍感到不安，那么种族隔离仍将是平衡状态。</p>
+   <p>谢林在国际象棋棋盘上放置了便士和硬币，并按照各种规则移动它们。他把董事会解释为一个城市，董事会的每个方块代表一个房子或很多。他将这些硬币和硬币解释为代表社会中任何两个群体的居民，例如两个不同种族的人，男孩和女孩，吸烟者和非吸烟者等。居住在董事会任何位置的居民的邻居包括正方形毗邻这个位置。因此，内部（非边缘）居民可能有多达八个邻居，非边角居民可能最多有五个邻居，边角居民可能最多有三个邻居。可以指定规则来确定特定居民是否满足其当前位置。如果不是，她会尝试移动到板上的另一个位置，或者可能只是完全退出电路板。正如可以预料的那样，Schelling发现，如果指定了居民的“内容规则”，那么董事会很快会演变成一种强烈隔离的位置模式，以便隔离得到极大的青睐。然而，令人惊讶的是，他还发现，即使居民的满足规则仅仅表达了对他们自己群体的邻居的温和偏好，最初整合的委员会也会进入完全隔离状态。</p>
+ </section>
+
+  <section class="mbd collapsed"><h1><span>►</span>概念模型 <sup class="expl-req">?</sup></h1>
+    <div id="expl-CM" class="expl"></div>
+
+    <p>用于研究种族隔离作为一种社会现象的概念模型描述了居民作为某一群体成员的行为，他们要么对自己的邻居感到满足或不满意，要么因为不公正而移居到另一个地方。</p>
+
+    <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+      <div id="expl-CIM" class="expl"></div>
+
+      <figure class="right">
+        <img src="img/CIM-ObjT.svg" width="450"/>
+        <figcaption>一个概念信息模型来藐视对象类型。</figcaption>
+      </figure>
+      <p>住宅隔离涉及居住在某些地址的居民作为某些群体的成员及其邻居作为空间结构。 因此，可能相关的对象类型是：</p>
+      <ol>
+        <li>住址，</li>
+        <LI>居民</li>
+         <li>居民群体。</li>
+      </ol>
+      <p>潜在的相关事件类型是:</p>
+      <ol>
+        <li>居民定期检查他们的邻居，以确定他们是否满意，</li>
+        <li>居民搬家</li>
+      </ol>
+      <p>具有参与关联的对象类型和事件类型都可以在UML类图中直观地描述，如下所示。</p>
+      <figure>
+        <img src="img/CIM.svg" width="600"/>
+        <figcaption>一个概念信息模型描述对象类型和事件类型。</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h1>概念流程模型 <sup class="expl-req">?</sup></h1>
+      <div id="expl-CPM" class="expl"></div>
+      <table>
+        <caption>事件规则表</caption>
+        <thead>
+        <tr>
+          <td>ON（事件类型）</td><td>DO（事件路径）</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>定期邻里检查</td>
+          <td>如果没有足够数量的同一组的邻居，则搜索具有相同组的足够数量的邻居的地方，并且如果找到，移动到它，否则移出邻域。</td>
+        </tr>
+        <tr>
+          <td>搬到一个目的地</td>
+          <td>更新居民的地址。</td>
+        </tr>
+        </tbody>
+      </table>
+      <figure>
+        <img src="img/PeriodicCheck_CRM.svg" width="600"/>
+        <figcaption>事件类型“定期邻域检查”的概念事件规则模型。</figcaption>
+      </figure>
+      <figure>
+        <img src="img/Move_CRM.svg" width="200"/>
+        <figcaption>事件类型“移动到目标”的概念事件规则模型。</figcaption>
+      </figure>
+    </section>
+  </section>
+
+<section class="mbd collapsed"><h1><span>►</span>模拟设计模型 <sup class="expl-req">?</sup></h1>
+  <div id="expl-DM" class="expl"></div>
+
+  <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+    <div id="expl-IDM" class="expl"></div>
+	
+    <p>研究问题：合理宽容居民获得的隔离程度如何？</p>
+    <p>我们可以将以下简化作为设计选择：</p>
+    <ul>
+    <li>不需要使用具有地址的真实地图，我们可以使用网格来表示住宅区域。</li>
+    <li>驻留者占据具有x / y坐标的网格单元。</li>
+    <li>没有必要代表个人居民。 根据其居民群体对网格单元进行着色就足够了。</li>
+    <li>没有必要举办活动。 我们可以简单地使用固定增量时间进展，其中时间增量（“滴答”）对应于隐式时间事件。</li>
+    </ul>
+
+    <p>每个居民都有一个邻域，由围绕它的8个相邻单元组成，包括垂直/水平（N / E / S / W）和对角线（NE / SE / SW / NW）。</p>
+    <p>OESjs模拟框架提供两种形式的网格空间：（1）简单的整数网格，其中网格单元具有整数值，例如，可以表示该位置处的驻留的组，以及（2）对象网格 ，其中网格单元格是一种特殊类型的对象，以便可以为其定义属性并将其与位于此网格单元格上的一组对象相关联。 显然，选择整数网格作为模拟的空间模型意味着对每个网格单元可以表示的信息的限制，但与对象网格相比允许更大的网格空间，因为它具有更小的内存占用。</p>
+    <p>在谢林分离模型-1中（SchellingSegregationModel-1）中，已选择整数网格作为空间模型，使得网格单元的整数值为零表示空的空间位置，而大于零的值表示居民所在的组的编号 位于那个细胞属于。 由于居民没有明确建模，作为单个对象，而是隐含地，作为网格单元格值，在此设计中，没有对象类型<code>Resident</code>，但只定义了一个对象类型<code>GroupOfResidents</code>，以便能够为不同的居民群体分配不同的容忍级别。</p>
+    <p>作为一种设计选择，我们抽象出概念模型中描述的现实世界事件，基于其时间依赖结构与捕获隔离过程的动态无关的假设。 设计依赖于抽象离散时间模型和隐式时间步长事件来驱动具有固定增量时间进展循环的模拟，而不是将事件建模为使用下一事件时间进展循环来驱动模拟的基础。 因此，信息设计模型不包含任何事件类型。</p>
+  </section>
+
+  <section>
+    <h1>流程设计模型 <sup class="expl-req">?</sup></h1>
+    <div id="expl-PDM" class="expl"></div>
+    <table>
+      <caption>事件规则</caption>
+      <thead>
+      <tr>
+        <td>ON（事件类型）</td><td>DO（事件路径）</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>每个模拟的时间步骤</td>
+        <td>
+          选择一个对住址不满意的居民R并为该居民选择一个免费单元格<br/>
+          &nbsp;&nbsp;&nbsp;这个单元格是居民R满意的<br/>
+          如果有这样一个单元格<br/>
+          那么把居民R移动到单元格<br/>
+          否则把居民R从网格中移除<br/>
+          重新评估受此变化影响的所有居民的满意度
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</section>
+</body>
+</html>
+

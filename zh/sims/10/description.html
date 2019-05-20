@@ -1,0 +1,194 @@
+<!-- ===========================================================================
+ * ServiceDesk-4 - An example of an Object Event Simulation.
+ * @copyright Copyright 2016 Gerd Wagner, BTU (Germany) + ODU (VA, USA)
+ * @author Gerd Wagner
+ * @license The MIT License (MIT)
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>OESjs - 得来速餐厅</title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="驱动器通过一个系统建模，在三个服务点执行订单处理活动，包括排队：菜单板上的订单，厨房的订单准备和取货窗口的订单取件。 该模型包括四种对象类型：MenuBoard，Kitchen，PickupWindow和Customer，一种事件类型：CustomerArrival，以及三种活动类型：OrderTaking，OrderPreparation和OrderPickup。 注意：在更现实的模型中，厨房中的订单队列将由几个厨房工作人员并行服务，这样他们就代表了OrderPreparation活动的资源。" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/10/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+ <div id="frontMatter">
+  <h1>得来速餐厅</h1>
+  <p><strong>分类标签</strong>: 商业运营管理, 离散事件模拟（DES），下一事件时间连续，基于活动的流程建模</p>
+  <p>针对相同系统/问题/域的其他对象事件模拟（OES）模型: <a href="../1/index.html">服务前台-1（ServiceDesk-1）</a> | <a href="../2/index.html">服务前台-2（ServiceDesk-2）</a></p>
+  <figure class="right"><img src="media/img/theme-image.png" alt="" width="361" height="256" /></figure>
+  <section id="shortDescription"></section>
+ </div>
+
+ <section class="mbd collapsed"><h1><span>►</span>概念模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-CM" class="expl"></div>
+
+   <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CIM" class="expl"></div>
+     <p>有三种订单处理活动：订单处理，订单准备和订单取货，所有这些都由具有队列的业务单位执行：订单的菜单板，
+        订单准备的厨房和取货订单的取货窗口。</p>
+     <p>潜在相关对象类型是:</p>
+<!--
+     <figure class="right-float">
+       <img src="CIM-ObjT.svg" width="450"/>
+       <figcaption>一个概念模型来描述对象类型</figcaption>
+     </figure>
+-->
+     <ol>
+       <li>顾客</li>
+       <li>经营单位：菜单板，厨房，取货窗</li>
+       <li>服务人员：订单接收人，厨师，皮卡窗口工作人员</li>
+     </ol>
+     <p>潜在的相关事件类型是:</p>
+     <ol>
+       <li>顾客到达</li>
+       <li>客户在订单窗口排队</li>
+       <li>接受订单</li>
+       <li>订单准备</li>
+       <li>顾客在取餐窗口排队</li>
+       <li>订单拿取</li>
+       <li>顾客离开</li>
+     </ol>
+     <p>请注意，<b>订单接受</b>, <b>订单准备</b> and <b>订单拿取</b> 都是<b>活动事件</b>, 都包含了开始事件和结束事件</p>
+<!--
+     <p>Both object types and event types, with their participation associations, can be visually described
+       in a UML class diagram, as shown below.</p>
+     <figure>
+       <img src="media/img/CIM.svg" width="600"/>
+       <figcaption>一个概念信息模型描述对象类型和事件类型。</figcaption>
+     </figure>
+-->
+   </section>
+
+   <section>
+     <h1>概念流程模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CPM" class="expl"></div>
+     <table>
+       <caption>事件规则</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>顾客到达</td>
+         <td>如果订单窗口忙，则新到达的客户排队，否则新建该客户的订单服务活动开始。</td>
+       </tr>
+       <tr>
+         <td>订单结束时采取活动事件</td>
+         <td>如果取件窗口忙，则客户排队，否则换新该客户的订单取件活动开始。 如果还有客户在等待在菜单板队列中，下一个订单活动开始。
+         </td>
+       </tr>
+       <tr>
+         <td>订单拿取时活动事件</td>
+         <td>服务对象的客户离场。 如果仍然有客户在提货窗口队列中等待，则下一个提货活动开始。
+         </td>
+       </tr>
+       </tbody>
+     </table>
+<!--
+     <figure>
+       <img src="media/img/CPM.svg" width="800"/>
+       <figcaption>A 概念流程模型 describing the conditional succession of events and activities.</figcaption>
+     </figure>
+-->
+   </section>
+ </section>
+
+ <section class="mbd collapsed"><h1><span>►</span>模拟设计模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-DM" class="expl"></div>
+
+   <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-IDM" class="expl"></div>
+     <p>通过对以下类型的对象，事件和活动进行建模，获得用于计算两个统计<b>最大队列长度</b>和<b>利用率</b>的计算设计：</p>
+  <ul>
+    <li>四个对象类型:
+      <ol>
+        <li><b><code>MenuBoard</code></b>带有（多值）引用属性<code>waitingCustomers</code>表示其队列，以及两个引用属性<code>kitchen</code>和<code>pickupWindow</code>，用于启用菜单板访问厨房和拾取窗口的队列。</li>
+        <li><b><code>Kitchen</code></b>有一个（多值）引用属性<code>waitingOrders</code>表示它的队列，一个多值引用属性<code>preparedOrders</code>表示准备好的订单集和一个引用属性<code>menuBoard</code>，用于使厨房能够访问菜单板的队列。</li>
+        <li><b><code>PickupWindow</code></b>具有两个多值引用属性<code>waitingCustomers</code>表示其队列和<code>preparedOrders</code>表示准备好的订单集，以及一个引用属性<code>menuBoard</code>，用于使厨房能够访问菜单板的队列。</li>
+        <li><b><code>Customer</code></b>具有属性<code>arrivalTime</code>，用于记录客户的到达时间，以便计算<b>系统中的时间</b>。</li>
+      </ol></li>
+    <li>一种事件类型：<b><code>CustomerArrival</code></b>，引用属性<code>orderWindow</code>，类<code>OrderWindow</code>作为范围。 作为外生事件类型，<b><code>CustomerArrival</code></b>具有<code>recurrence</code>函数，该函数表示用于计算两个后续事件发生之间的时间的随机变量。</li>
+    <li>三种活动类型:
+      <ol>
+        <li><b><code>OrderTaking</code></b>与对象类型<code>MenuBoard</code>和<code>randomDuration</code>函数有资源关联。</li>
+        <li><b><code>OrderPreparation</code></b>与<code>Kitchen</code>和<code>randomDuration</code>函数有资源关联。</li>
+        <li><b><code>OrderPickup</code></b>与<code>PickupWindow</code>和<code>randomDuration</code>函数有资源关联</li>
+      </ol></li>
+  </ul>
+     <p>对于所有活动类型，模拟器计算其资源的利用率。</p>
+<!--
+     <p>The object types, event types and activity types described above, together with their participation
+       associations, are visually described in the following UML class diagram:</p>
+     <figure>
+       <img src="media/img/IDM.svg" width="600"/>
+       <figcaption>一个信息设计模型来描述对象类型和事件类型。</figcaption>
+     </figure>
+-->
+   </section>
+   <section><h1>流程设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-PDM" class="expl"></div>
+     <table>
+       <caption>事件规则设计表</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>CustomerArrival( ow) @ t</td>
+         <td>
+           INCREMENT ow.queueLength<br/>
+           IF ow.queueLength = 1<br/>
+           THEN SCHEDULE ActivityStart("OrderTaking", ow) @ (t+1)
+         </td>
+       </tr>
+       <tr>
+         <td>ActivityEnd("OrderTaking", a) @ t</td>
+         <td>
+           SET cust = POP( a.orderWindow.waitingCustomers)<br/>
+           SET ordPrepDuration = OrderPreparationEnd.randomDuration()<br/>
+           SET pickupWindowQueue = a.orderWindow.pickupWindow.waitingCustomers<br/>
+           SCHEDULE OrderPreparationEnd( cust.orderNo) @ (t + ordPrepDuration)<br/>
+           PUSH cust TO pickupWindowQueue<br/>
+           IF pickupWindowQueue.size = 1<br/>
+           THEN SCHEDULE ActivityStart("OrderPickup", a.orderWindow.pickupWindow) @ (t+1)<br/>
+           IF a.orderWindow.waitingCustomers.size > 0<br/>
+           THEN SCHEDULE ActivityStart("OrderTaking", a.orderWindow) @ (t+1)
+         </td>
+       </tr>
+       <tr>
+         <td>ActivityEnd("OrderPreparation", a) @ t</td>
+         <td>
+           SET pickupWindow = a.kitchen.pickupWindow<br/>
+           SET orderNo = POP( a.kitchen.waitingOrders)<br/>
+           pickupWindow.preparedOrders.add( ordNo)<br/>
+           PUSH orderNo TO pickupWindow.preparedOrders
+         </td>
+       </tr>
+       <tr>
+         <td>ActivityEnd("OrderPickup", a) @ t</td>
+         <td>
+           SET cust = POP( a.pickupWindow.waitingCustomers)<br/>
+           IF a.pickupWindow.waitingCustomers.size > 0<br/>
+           THEN SCHEDULE ActivityStart("OrderPickup", a.pickupWindow) @ (t+1)
+         </td>
+       </tr>
+       </tbody>
+     </table>
+   </section>
+ </section>
+</body>
+</html>
+

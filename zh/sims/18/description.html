@@ -1,0 +1,226 @@
+<!-- ===========================================================================
+ * OESjs Simulation "LemonadeStand"
+ * @copyright CC BY-NC 2017 Gerd Wagner
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>OESjs - 柠檬状态</title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="该模型通过实施输入项目的补货政策来修改和扩展柠檬状态-1（LemonadeStand-1）模型，要求将每日汇总交货事件替换为每个输入项目的提前期延迟交货事件，并实施由天气主导的市场条件。" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/18/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+ <div id="frontMatter">
+  <h1>一个受天气支配的制造公司在垄断市场的柠檬状态</h1>
+  <p><strong>分类标签</strong>: 商业运营管理, 离散事件模拟（DES），下一事件时间连续</p>
+  <figure class="right"><img src="img/mineral-water-lime-ice-mint-320x213-CC0.jpeg" alt="Lemonade" width="320" height=""213 /></figure>
+  <section id="shortDescription"></section>
+ </div>
+ <section class="collapsed"><h1><span>►</span>背景</h1>
+     <p>柠檬状态游戏允许主动学习以下主题：</p>
+     <ol>
+         <li><details id="PED"><summary>需求弹性价格</summary>
+             <p><b>需求价格弹性（PED）</b>是用于显示商品或服务所需数量对其价格变化的响应性或弹性的度量。 更确切地说，它给出了响应价格变化百分之一的所需数量的百分比变化（其他条件不变，即保持所有其他需求决定因素不变，例如收入）。 一般而言，当PED小于1（绝对值）时，对商品的需求被认为是无弹性的：即，价格的变化对所需商品的数量具有相对小的影响。 当PED大于1（绝对值）时，对商品的需求被认为是弹性的：即，价格的变化对商品的需求量具有相对大的影响。</p>
+         </details></li>
+         <li><details><summary>售价计划</summary>
+             <p>通常，价格计划基于每个产品单位的全部成本，其计算为固定成本（主要是人工，例如，资产和营销成本的折旧）加上可变成本（主要是输入材料）。 在<b>成本加成定价</b>中，产品价格p通过在成本c：p = c + rc中加入比例利润来计划，其中r是计划利润率。</p>
+             <p>在有利的市场条件下，全部成本可用于成本加成定价，而在销售不佳期间（例如，由于竞争加剧），可以使用边际成本。 当产品的<a href="#PED" title="Price Elasticity of Demand">PED</a>发生变化时，可以调整利润率。 
+
+              例如，当天气条件阳光充足和温暖时，柠檬状态可以提高其计划利润率，因为在这种情况下，柠檬水的其他非常具有价格弹性的需求变得更加无弹性，从而允许价格上涨而不影响需求。 
+                .</p>
+         </details></li>
+         <li><details><summary>需求预测</summary>
+             <p>可以基于先前记录的每日需求数据来预测新一天的需求，其形成时间序列。 时间序列的两种最常见的预测方法是简单移动平均线和指数加权移动平均线方法。 请参阅https://people.duke.edu/~rnau/411avg.htm。 在LemonadeStand-1模型中，使用简单移动平均法。</p>
+         </details></li>
+         <li><details><summary>材料清单</summary>
+             <p>物料清单（BoM）以组件项目列表的形式定义产品的组成，每个组件项目都具有组装生产单元所需的数量。 通常，组件项也可以具有BoM，即由其他项组成，使得嵌套的组合树被删除。
+
+在以柠檬水作为产品的柠檬状态的情况下，生产单位可能是3.5升的柠檬水，因此我们可能有以下BoM：</p>
+             <pre>{"柠檬": 3, "水": 2.5, "冰块": 50, "糖": 0.3, "纸杯": 1}</pre>
+         </details></li>
+         <li><details><summary>生产计划</summary>
+             <p>生产数量（批次数）是根据需求预测计划的，但是在使用库存中可用输入项目的限制下。</p>
+         </details></li>
+         <li><details><summary>库存管理</summary>
+             <small>摘自麻省理工学院运输与物流中心提供的MITx MicroMasters供应链管理课程的重要概念文件。</small>
+             <p>持有库存的原因有很多，包括缓冲需求，供应，交付和制造方面的不确定性。 拥有库存可以实现更顺畅的操作。 然而，存在太多库存存在问题。 库存过剩会导致腐败和陈旧过时。 此外，在库存上花费太多限制了可用于其他活动和投资的资源。 库存分析基本上是确定正确位置的正确产品库存量。 在运营层面，公司必须决定何时发出补货订单以及订购多少。 这需要对其库存的补货政策作出战术决策。</p>
+             <p>两个最重要的补货政策是：</p>
+             <dl>
+                 <dt><b>定期审核</b>参数<b>重新订购期</b>和<b>目标广告资源</b></dt>
+                 <dd>根据此政策，定期发放用于将库存填充到<b>目标库存</b>的补货订单。 目标库存是作为提前期和重新订购期的预期需求加上交货期和重新订购期的需求标准差乘以安全系数的总和得出的。</dd>
+                 <dt><b>持续审核</b>，参数<b>重新订购点</b>和<b>订单数量</b>。</dt>
+                 <dd>根据此政策，当库存水平低于再订货点时，将发出补货订单。
+                      再订货点是作为交货期的预期需求加上安全库存的总和得出的，安全库存是需求的标准差。
+                      提前期乘以安全系数。</dd>
+             </dl>
+             <p>这两项政策都在成本和服务水平之间进行权衡，这是一个模糊的概念，可以通过不同的方式实施。 服务级别的通用度量是周期服务级别（CSL），即在补充周期内不存在库存的概率。 可以设计库存策略以最小化成本，同时实现例如95％的预期CSL，即减去库存发生的概率。 总成本是购买成本（每单位），订单成本（每个订单），持有成本（每个时间单位）和短缺（或缺货）成本（每个事件）的总和，这是没有成本的成本 订购时的库存商品。</p>
+         </details></li>
+     </ol>
+ </section>
+
+ <!--
+ <section class="mbd collapsed"><h1><span>►</span>概念模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-CM" class="expl"></div>
+
+   <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CIM" class="expl"></div>
+     <p>潜在相关对象类型是:</p>
+     <ol>
+       <li>顾客</li>
+       <li>柠檬状态s,</li>
+       <li>suppliers.</li>
+     </ol>
+     <p></p>
+     <p>潜在的相关事件类型是:</p>
+     <ol>
+       <li>顾客到达</li>
+       <li>...,</li>
+     </ol>
+     <figure>
+       <img src="media/img/CIM.svg" width="600"/>
+       <figcaption>一个概念信息模型描述对象类型和事件类型。</figcaption>
+     </figure>
+   </section>
+
+   <section>
+     <h1>概念流程模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CPM" class="expl"></div>
+     <table>
+       <caption>事件规则</caption>
+       <thead>
+       <tr>
+         <th>ON（事件类型）</th><th>DO（事件路径）</th><th>Rule Diagram</th>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>顾客到达</td>
+         <td>If the service desk is busy, then the new customer queues up,
+           else the service starts.</td>
+         <td><img src="media/img/Arrival_CRM.svg" width="250"/></td>
+       </tr>
+       </tbody>
+     </table>
+     <p>The involved types of events can be related with each other via their (possibly conditional) temporal succession,
+      as visualized in the following BPMN process diagram:</p>
+     <figure>
+       <img src="media/img/CPM.svg" width="600"/>
+       <figcaption>A conceptual process diagram integrating the event rule diagrams.</figcaption>
+     </figure>
+   </section>
+ </section>
+-->
+ <section class="mbd collapsed"><h1><span>►</span>模拟设计模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-DM" class="expl"></div>
+
+   <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-IDM" class="expl"></div>
+      <p>柠檬状态-2（<em>LemonadeStand-2</em>）模型改进和扩展了柠檬服务-1（<em>LemonadeStand-1</em>）模型，通过以下来实现</p>
+      <ol>
+        <li><p>添加 <b>库存</b> 管理:</p>
+         <ol><li>将库存管理属性<i> targetInventory </i>，<i> reorderPeriod </i>和<i> reorderPoint </i>添加到<i> InputItemType </i>类。</li>
+          <li>使用<i>交付</i>替换汇总交货事件类型<i> DailyDelivery </i>，以便<i>交货</i>事件表示先前订购的特定物料数量的交货。 这意味着需要添加<i> DailyProduction </i>事件类型，因为不能再在DailyDelivery事件的上下文中执行日常生产。</li>
+          </ol></li>
+        <li><p>添加<b>易腐</b>物品管理:</p>
+         <ol><li>将属性<i> expirationTimeSpan </i>添加到<i> ItemType </i>。</li>
+          <li>将属性<i> deliveryDate </i>添加到<i> InputInventoryItem </i>类，以便输入清单现在包含
+              每个项目类型的几个批次，每个批次都有一个交货日期，允许检查项目的到期时间。</li>
+          <li>注意<i> Delivery </i>事件以<i> InputInventoryItem </i>实例的形式创建批处理。</li>
+         </ol></li>
+        <li><p>添加<b>通用市场</b>模型:</p>
+         <ol><li>添加对象类型<i> DailyDemandMarket </i>作为定义<code> getDailyDemandQuantity（）</code>函数的抽象类
+           表示随机变量。</li>
+         <li>添加与<i> DailyDemandMarket </i>关联的对象类型<i> ProductCategory </i>，使公司通过与产品类别相关联的产品类型与日常需求市场间接关联，该产品类别与 日需求市场。</li>
+         <li>通过调用<i> LemonadeMarket的</i>设置<i> DailyDemand </i>事件的<code> quantity </code>属性
+            <code> getDailyDemandQuantity（）</code>函数。</li>
+         </ol></li>
+        <li>通过添加对象类型<i> LemonadeMarket </i>作为摘要的具体子类来添加<b>特定市场</b>模型
+           <i> DailyDemandMarket </i>类，使其<code> getDailyDemandQuantity（）</code>函数计算每日需求量
+           在天气模型的基础上。</li>
+      </ol>
+       <p>这些更改会引起以下的信息设计模型:</p>
+     <figure>
+       <img src="img/IDM.svg" width="800"/>
+       <figcaption>一种用于模拟单一产品公司的信息设计模型。</figcaption>
+     </figure>
+     <p>注意代表随机变量的函数，如<code> serviceDuration（）</code>和<code> recurrence（）</code>，
+        标有关键字（或UML刻板印象）«rv»代表“随机变量”。</p>
+     <figure>
+       <img src="img/IDM-LemonadeMarket.svg" width="600"/>
+         <figcaption>为柠檬状态的模拟添加特定的市场模型。</figcaption>
+     </figure>
+   </section>
+   <section><h1>流程设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-PDM" class="expl"></div>
+     <table>
+       <caption>事件规则设计表</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>CustomerArrival( sd) @ t</td>
+         <td style="font-size:smaller">
+           INCREMENT sd.queueLength<br/>
+           IF sd.queueLength = 1<br/>
+           THEN SCHEDULE CustomerDeparture( sd) @ (t + sd.serviceDuration())
+         </td>
+       </tr>
+       </tbody>
+     </table>
+     <table>
+       <caption>从概念事件规则模型到 设计模型规则。</caption>
+       <thead>
+        <tr><th>概念规则模型</th><th>设计模型规则</th></tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td><img src="media/img/Arrival_CRM.svg" width="250"/></td>
+         <td><img src="media/img/Arrival_RDM.svg" width="450"/></td>
+        </tr>
+        <tr>
+         <td><img src="media/img/ServiceStart_CRM.svg" width="250"/></td>
+          <td rowspan="2"><img src="media/img/Departure_RDM.svg" width="450"/></td>
+        </tr>
+        <tr>
+         <td><img src="media/img/ServiceEnd_CRM.svg" width="250"/></td>
+        </tr>
+       </tbody>
+     </table>
+     <figure>
+       <img src="media/img/PDM.svg" width="700"/>
+       <figcaption>一个流程设计模型来表达事件和设计模型规则。</figcaption>
+     </figure>
+   </section>
+ </section>
+
+ <section class="mbd collapsed"><h1><span>►</span>参见</h1>
+  <section><h1>针对相同系统/问题/域的其他对象事件模拟（OES）模型</h1>
+   <ol>
+     <!--
+     <li><a href="../001-ServiceDesk-1/index.html">ServiceDesk-1</a>: A service queue model
+       (one service and one queue) with two statistics: <i>maximum queue length</i> and <i>service utilization</i>.
+       The model abstracts away from individual customers and from the composition of the queue.</li>
+     -->
+     <li><a href="../2/index.html">服务前台-2（ServiceDesk-2）</a>: 具有一个统计信息的服务队列模型（一个服务和一个队列）：平均响应时间，即客户从到达到离开时在系统中花费的平均时间长度。 为了记录它们的到达时间，单个客户在<i>waitingCustomers</i>队列中明确表示。</li>
+   </ol>
+  </section>
+  <section><h1>使用其他框架实现的类似模型</h1>
+   <ol>
+      <li><a href="http://ccl.northwestern.edu/netlogo/models/community/Queueing_Simulation_Discrete_Event">队列模拟离散事件（Queueing_Simulation_Discrete_Event）</a>: 此NetLogo模拟使用NetLogo的tick-advance原语以非整数量推进仿真时间。 但是，NetLogo的标准刻度显示无法显示非整数值，因此必须编写自定义刻度显示。 版权所有2010，Nick Bennett。</li>
+   </ol>
+  </section>
+ </section>
+</body>
+</html>
+

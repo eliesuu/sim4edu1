@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" vocab="http://schema.org/">
+<head>
+ <meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+ <title>Sim4edu - Discrete Event Simulation</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <meta name="description" content="About Discrete Event Simulation (DES) and examples of DES models." />
+ <link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+ <link rel="stylesheet" type="text/css" href="../css/basic-styles.css" />
+ <link rel="stylesheet" type="text/css" href="../css/area-page.css" />
+</head>
+<body>
+ <header><img id="logo" src="../img/sim4edu.svg" alt="Sim4edu logo" width="400" />
+  <h1 id="page-title">Discrete Event Simulation</h1>
+ </header>
+ <div id="between-head-and-foot">
+  <main>
+<p class="smallprint">The term <em>Discrete Event Simulation (DES)</em> has been established as an umbrella term 
+ subsuming various kinds of computer simulation approaches, all based on the general idea of making a computational model of real-world system conceived as a <em>discrete dynamic system</em> by representing its state with the help of <em>state variables</em>, and modeling its dynamics by modeling the events that are responsible for its <em>state changes</em>.</p>
+
+<p class="smallprint">There is, however, no generally accepted definition of DES. Rather, there are a number of
+ different DES formalisms (like <em>Petri Nets</em>, <em>State Charts</em>, <em>Event Graphs</em> or <em>DEVS</em>)
+ and there are different DES tools/frameworks. Many of them (like <em>Arena</em>, <em>Simio</em> and <em>
+  AnyLogic</em>) are based on the <strong><em><a href="../pn-models">Processing Network</a> (PN)</em> paradigm
+ </strong> where <em>processing objects</em> enter a system (at an <em>entry</em> node), and are then subject to a
+ number of <em>processing actvities</em> performed at corresponding <em>processing nodes</em> using certain <em>
+  resources</em>, before they leave the system (at an <em>exit</em> node). In many textbooks and tutorials, DES is
+ confused with the PN paradigm. However, the PN paradigm is not a general DES approach, because it is limited to
+ problems that can be modeled as&nbsp;processing networks such as production lines or service provision networks.
+ But many other discrete event systems, such as inventory systems, business enterprises, consumer markets or
+ socio-technical systems like elevators or road traffic, do not correspond to processing networks.</p>
+
+<h2>Examples of DES Models with Next-Event Time Progression</h2>
+
+<aside><h1>Processing Network Models</h1>
+ <dl><dt><a href="../sims/12">ServiceDesk-4</a></dt>
+	<dd>A service desk is modeled as a processing node of a processing network that has an entry node and an exit node for arriving and departing customers.</dd>
+	<dt><a href="../sims/11">ConsecutiveServices-2</a></dt>
+	<dd>The customers of the Department of Motor Vehicles first have to queue up at the reception for their request being recorded. Then they have to wait for a clerk who will handle their case. Both the reception desk and the case handling desk are modeled as processing nodes (with input queues) within a processing network that has an entry node and an exit node for arriving and departing customers.</dd>
+	<dt><a href="../sims/13">FourConsecutiveMachines-3</a></dt>
+	<dd>A manufacturing company uses a linear assembly line with 4 consecutive machines. The simulation scenario defines an entry node for incoming orders, 4 consecutive processing nodes representing the four machines M1-M4, and an exit node.</dd>
+ </dl>
+</aside>
+
+<p>The following example models are based on Object Event Simulation (OES).</p>
+
+<dl><dt><a href="../sims/4">Inventory Management</a></dt>
+	<dd>An inventory management system for a single product shop with a continuous replenishment policy based on a reorder point.</dd>
+	<dt><a href="../sims/1">ServiceDesk-1</a></dt>
+	<dd>A queueing system model (one service and one queue) with two statistics: maximum queue length and service utilization. The model includes one object type: <em>ServiceDesk</em>, and two event types: <em>CustomerArrival</em> and <em>CustomerDeparture</em>, abstracting away from individual customers and from the composition of the queue, which is only represented in terms of its length.</dd>
+	<dt><a href="../sims/2">ServiceDesk-2</a></dt>
+	<dd>A queueing system model (one service and one queue) with one statistic: the average length of time a customer spends in the system from arrival to departure. For recording their waiting times, individual customers need to be represented as entities/objects. The model includes two object types: <em>ServiceDesk</em> and <em>Customer</em>, and two event types: <em>CustomerArrival</em> and <em>CustomerDeparture</em>.</dd>
+	<dt><a href="../sims/3">ServiceDesk-3</a></dt>
+	<dd>A queueing system model that models the service as an activity with the service desk as its resource, such that the service desk utilization statistics is computed automatically. The model includes one object type: <em>ServiceDesk</em>, one event type: <em>CustomerArrival</em> and one activity type: <em>PerformService</em>.</dd>
+	<dt><a href="../sims/9">ConsecutiveServices</a></dt>
+	<dd>An activity-based model of two consecutive service desks with waiting lines. Both types of services are modeled as activity types, such that utilization statistics are computed automatically. The model includes one object type: ServiceDesk, one event type: CustomerArrival, and two activity types: Reception and CaseHandling.</dd>
+	<dt><a href="../sims/10">DriveThru</a></dt>
+	<dd>A model of a drive through restaurant based on <a href="http://www.informs-sim.org/wsc08papers/005.pdf">Introduction to Simulation</a> by R.G. Ingalls, a tutorial given at<em> </em>the <em>2008 Winter Simulation Conference</em>. The drive thru is modeled as a system with three order processing activities performed at service nodes with queues: the order taking at the menu board, the order preparation at the kitchen and the order pickup at the pickup window. The model includes four object types: <em>MenuBoard</em>, <em>Kitchen</em>, <em>PickupWindow</em> and <em>Customer</em>, one event type: <em>CustomerArrival</em>, and three activity types: <em>OrderTaking</em>, <em>OrderPreparation</em> and <em>OrderPickup</em>.</dd>
+	<dt><a href="../sims/17">Lemonade Stand Game (Version 1) </a></dt>
+	<dd>A Lemonade Stand as a manufacturing company that performs daily production based on demand forecasting.</dd>
+	<dt><a href="../sims/18">Lemonade Stand Game (Version 2)</a></dt>
+	<dd>A Lemonade Stand as a manufacturing company in a monoploy market dominated by weather conditions. This simulation example comes with an observation user interface (UI) that provides a visualization of simulation runs and with a user interaction UI that allows to play with the simulation.</dd>
+	<dt><a href="#">The MIT Beer Game</a></dt>
+	<dd>(coming soon)</dd>
+	<dt><a href="../sims/20/LengnickBaselineEconomy-1">Lengnick's Baseline Economy</a></dt>
+	<dd>Lengnick's Baseline Economy consists of two types of economic actors only: households playing the roles of employees and consumers, and firms playing the roles of employers and producers. All firms produce and sell the same abstract consumption good that is bought (and consumed) by households. The numbers of households and firms are fixed (there is neither population growth nor shrinkage). Households do not <q>die</q> by starvation. When their income shrinks, they adapt by cutting their consumption. Firms do not get bankrupt. When their liquidity shrinks, they adapt by cutting wages. Consumption goods are produced and bought daily while labor is bought monthly. Households buy consumption goods only from a limited number of firms, their preferred suppliers, which they update continuously. Consumption expenditure increases with personal wealth, but at a decaying rate. Households are employed by at most one firm, their employer. They continuously search for an employer that pays a higher wage.</dd>
+</dl>
+  </main>
+
+  <nav><h1>Navigation</h1>
+   <ul>
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../oes/index.html" title="Agent/Object Event Simulation">A/OES</a></li>
+    <li><a href="../simulations/index.html">Simulations</a></li>
+    <li><a href="../reading/index.html">Tutorials/Articles</a></li>
+    <li><a href="../downloads/index.html">Downloads</a></li>
+    <li><a href="../faq/index.html" title="Frequently Asked Questions">FAQ</a></li>
+   </ul>
+  </nav>
+
+  </div>
+
+  <footer>
+   <p>© 2016-2019 G. Wagner, M. Diaconescu und L.G. Nardin, Brandenburgische Technische Universität</p>
+  </footer>
+</body>
+</html>

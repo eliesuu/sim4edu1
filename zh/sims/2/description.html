@@ -1,0 +1,174 @@
+<!-- ===========================================================================
+ * Service Desk - An example of an Object Event Simulation.
+ * @copyright Copyright 2016 Gerd Wagner, BTU (Germany) + ODU (VA, USA)
+ * @author Gerd Wagner
+ * @license The MIT License (MIT)
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>OES - 排队系统模拟</title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="具有连续时间和统计数据的服务队列模型（一个服务和一个队列）：平均响应时间，即客户从到达到离开时在系统中花费的平均时间长度。 为了记录它们的到达时间，单个客户在waitingCustomers队列中明确表示。 该模型包括两种对象类型：ServiceDesk和Customer，以及两种事件类型：CustomerArrival和CustomerDeparture。" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/2/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+<div id="frontMatter">
+  <h1>一个具有均值响应时间统计的连续时间服务队列模型</h1>
+    <p><strong>分类标签</strong>: 业务运营管理，离散事件模拟（DES），下一个事件时间进展</p>
+  <figure class="right"><img src="media/img/theme-image.svg" alt="" width="240" /></figure>
+  <section id="shortDescription"></section>
+</div>
+
+<section class="mbd collapsed"><h1><span>►</span>概念模型 <sup class="expl-req">?</sup></h1>
+  <div id="expl-CM" class="expl"></div>
+
+   <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+    <div id="expl-CIM" class="expl"></div>
+     <p>潜在相关对象类型是:</p>
+    <!--
+         <figure class="right-float">
+           <img src="CIM-ObjT.svg" width="450"/>
+           <figcaption>一个概念模型来描述对象类型</figcaption>
+         </figure>
+    -->
+    <ol>
+      <li>顾客,</li>
+       <li>服务前台,</li>
+       <li>待服务队列,</li>
+       <li>服务职员.</li>
+    </ol>
+    <p>潜在的相关事件类型是:</p>
+    <ol>
+      <li>顾客到达,</li>
+       <li>顾客排队,</li>
+       <li>顾客被通知/被邀请前往服务台,</li>
+       <li>服务开始,</li>
+       <li>服务结束,</li>
+       <li>顾客离开.</li>
+    </ol>
+         <p>对象类型和事件类型以及它们的参与关联可以在UML类图中直观地描述，如下所示。</p>
+
+    <figure>
+      <img src="media/img/CIM.svg" width="600"/>
+      <figcaption>一个描述对象类型和事件类型的概念信息模型。</figcaption>
+    </figure>
+  </section>
+
+  <section>
+     <h1>概念流程模型<sup class="expl-req">?</sup></h1>
+    <div id="expl-CPM" class="expl"></div>
+    <table>
+       <caption>事件规则</caption>
+      <thead>
+      <tr>
+         <th>ON (事件类型)</th><th>DO (事件路径)</th><th>规则图示</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>顾客抵达</td>
+         <td>如果服务前台正忙，那么新顾客进入队列，否则服务开始。</td>
+         <td><img src="media/img/Arrival_CRM.svg" width="250"/></td>
+       </tr>
+       <tr>
+         <td>服务开始</td>
+         <td>一定时间之后，服务结束。</td>
+         <td><img src="media/img/ServiceStart_CRM.svg" width="250"/></td>
+       </tr>
+       <tr>
+         <td>服务结束</td>
+         <td>接受服务的顾客离开，如果仍有顾客在队列中等待，那么下一次服务开始。</td>
+         <td><img src="media/img/ServiceEnd_CRM.svg" width="250"/></td>
+       </tr>
+       </tbody>
+     </table>
+     <p>所涉及的事件类型可以通过它们（可能的条件）时间连续相互关联，如下面的BPMN流程图所示:</p>
+     <figure>
+       <img src="media/img/CPM.svg" width="600"/>
+       <figcaption>一个概念流程图来表示事件规则。</figcaption>
+    </figure>
+  </section>
+</section>
+
+ <section class="mbd collapsed"><h1><span>►</span>模拟设计模型 <sup class="expl-req">?</sup></h1>
+  <div id="expl-DM" class="expl"></div>
+
+   <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+    <div id="expl-IDM" class="expl"></div>
+    <p>一个用于计算一个统计量的计算设计：<b>平均响应时间</b>，定义为顾客从到达到离开在系统中花费的平均时间长度，等于平均等待时间加上平均服务持续时间。 为了能够计算平均响应时间，我们需要存储所有到达顾客的到达时间。 除了服务台之外，这可以通过明确地将顾客建模为对象类型来实现。 因此，我们得到以下类型的对象：</p>
+    <ul>
+      <li><b><code>Customer</code></b> 具有一个（十进制值）属性 <code>arrivalTime</code>;</li>
+      <li><b><code>ServiceDesk</code></b> 与<code>Customer</code>有关联，表示多值引用属性<code>waitingCustomers</code>，以及随机变量<code>serviceDuration()</code>，它模拟服务持续时间的随机变化（表示为函数）。</li>
+    </ul>
+    <p>有两种事件类型:</p>
+    <ul>
+      <li><b><code>CustomerArrival</code></b> 具有两个代表参考属性的参与关联：（1）具有<code>customer</code>类作为范围的<code>customer</code>，以及（2）具有<code>serviceDesk</code>类作为范围的<code>serviceDesk</code>。 作为外因事件类型，<code>CustomerArrival</code>具有<code>recurrence</code>函数，该函数表示用于计算两个后续事件发生之间的时间的随机变量。</li>
+      <li><b><code>CustomerDeparture</code></b> 与<code>ServiceDesk</code>有一个参与关联，代表参考属性<code>serviceDesk</code>。</li>
+    </ul>
+    <p>请注意，在我们的设计中，我们不需要<code>CustomerDeparture</code>和<code>Customer</code>之间的参与关联，因为对于任何顾客离开事件，可以通过从<code>waitingCustomers</code>队列中获取第一个项来检索相关顾客。</p>
+    <p>上面描述的对象类型和事件类型及其参与关联在下面的UML类图中可视化描述：</p>
+    <figure>
+      <img src="media/img/IDM.svg" width="600"/>
+       <figcaption>描述对象类型和事件类型的信息设计模型。</figcaption>
+    </figure>
+  </section>
+   <section><h1>流程设计模型<sup class="expl-req">?</sup></h1>
+    <div id="expl-PDM" class="expl"></div>
+    <table>
+       <caption>事件规则设计表</caption>
+      <thead>
+      <tr>
+         <td>ON (事件类型)</td><td>DO (事件路径)</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>CustomerArrival( c, sd) @ t<br/>with c:Customer and sd:ServiceDesk</td>
+        <td>
+          PUSH c TO sd.waitingCustomers<br/>
+          IF sd.waitingCustomers.length = 1<br/>
+          THEN SCHEDULE CustomerDeparture( sd) @<br/>(t + ServiceDesk.serviceDuration())
+        </td>
+      </tr>
+      <tr>
+        <td>CustomerDeparture( sd) @ t<br/>with sd:ServiceDesk</td>
+        <td>
+          POP c FROM sd.waitingCustomers<br/>
+          IF sd.waitingCustomers.length > 0<br/>
+          THEN SCHEDULE CustomerDeparture( sd) @<br/>(t + ServiceDesk.serviceDuration())
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+ </section>
+
+<section class="mbd collapsed"><h1><span>►</span>参见</h1>
+  <section><h1>针对相同系统/问题/域的其他对象事件模拟（OES）
+  模型</h1>
+  <ol>
+    <li><a href="../../../sims/1/index.html">服务前台-1（ServiceDesk-1）</a>: 具有两个统计信息的服务队列模型（一个服务和一个队列）：<b>最大队列长度</b>和<b>服务利用率</b>。 该模型从个体顾客和队列的组成中抽象出来。</li>
+     <li><a href="../3/index.html">服务前台-3（ServiceDesk-3）</a>: 服务队列模型，其中服务被建模为以服务台作为其资源的活动，其自动计算利用率统计信息。</li>
+     <li><a href="../12/index.html">服务前台-4（ServiceDesk-4）</a>: 一种服务队列模型，其中服务台被建模为处理网络的处理节点，该处理网络具有用于到达和离开的顾客的入口节点和出口节点。 该模型基于预定义的网络进程（<i>Processing Network</i>）概念：WorkObject，Arrival，EntryNode，ProcessingNode和ExitNode，以便工作对象“流经系统”。</li>
+     <li><a href="../9/index.html">连续服务（ConsecutiveServices）</a>: 一个具有顾客等待线的两个连续服务提供商的基于活动的服务队列模型。</li>
+     <li><a href="../11/index.html">网络进程-1（ProcessingNetwork-1）</a>: 一种服务队列模型，其中服务提供者被建模为处理网络内的处理节点（具有输入队列），该处理网络具有用于到达和离开的顾客的入口节点和出口节点。 该模型基于预定义的网络进程概念（<i>Processing Network</i>）：WorkObject，Arrival，EntryNode，ProcessingNode和ExitNode，以便工作对象“流经系统”。</li>
+  </ol>
+  </section>
+  <section><h1>使用其他框架实现的类似模型</h1>
+   <ol>
+     <li><a href="http://ccl.northwestern.edu/netlogo/models/community/Queueing_Simulation_Discrete_Event">Queueing_Simulation_Discrete_Event</a>: 
+	 队列模拟离散事件（Queueing_Simulation_Discrete_Event）</a>: 此NetLogo模拟使用NetLogo的tick-advance原语以非整数量推进仿真时间。 但是，NetLogo的标准刻度显示无法显示非整数值，因此必须编写自定义刻度显示。 版权所有2010，Nick Bennett。</li>
+   </ol>
+  </section>
+</section>
+</body>
+</html>
+

@@ -1,0 +1,202 @@
+<!-- ===========================================================================
+ * OESjs Simulation "LemonadeStand"
+ * @copyright CC BY-NC 2017 Gerd Wagner
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>OESjs - 柠檬状态</title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="<p>柠檬水摊位可以通用方式建模为单个产品制造公司的实例，该公司使用输入库存并将输入项目转换为输出项目（产品）。 我们制作了一系列三个日益复杂的柠檬水摊位模型：</p><ol><li>在基本模型中，我们建立一个只有一个柠檬水摊位（垄断）的场景，我们从市场条件，客户和个人客户订单以及供应商，个人补货订单和相应的交货，库存管理，营销活动和 竞争。 客户订单汇总为随机的每日需求数量。 汇总补货订单直接转换为相应的每日交货。 由于每日交付可靠，因此无需进行库存管理。</li><li>在第二个模型中，我们考虑个人（可能是延迟的）交付，库存管理和由天气主导的市场条件。</li><li>在第三个模型中，我们考虑个人客户，我们建立了一个场景，其中有几个相互竞争的柠檬水摊位。</li></ol>" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/17/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+ <div id="frontMatter">
+  <h1>一个制造公司受天气状况影响的柠檬状态</h1>
+  <p><strong>分类标签</strong>: 商业运营管理, 离散事件模拟（DES），下一事件时间连续</p>
+  <figure class="right"><img src="img/mineral-water-lime-ice-mint-320x213-CC0.jpeg" alt="Lemonade" width="320" height=""213 /></figure>
+  <section id="shortDescription"></section>
+ </div>
+ <section class="collapsed"><h1><span>►</span>背景</h1>
+     <p>柠檬状态游戏允许主动学习以下主题：</p>
+     <ol>
+      <li><details id="PED"><summary>需求弹性价格</summary>
+       <p><b>需求价格弹性（PED）</b>是用于显示商品或服务所需数量对其价格变化的响应性或弹性的度量。 更确切地说，它给出了响应价格变化百分之一的所需数量的百分比变化（其他条件不变，即保持所有其他需求决定因素不变，例如收入）。 一般而言，当PED小于1（绝对值）时，对商品的需求被认为是无弹性的：即，价格的变化对所需商品的数量具有相对小的影响。 当PED大于1（绝对值）时，对商品的需求被认为是弹性的：即，价格的变化对商品的需求量具有相对大的影响。</p>
+        </details></li>
+       <li><details><summary>售价计划</summary>
+             <p>通常，价格计划基于每个产品单位的全部成本，其计算为固定成本（主要是人工，例如，资产和营销成本的折旧）加上可变成本（主要是输入材料）。 在<b>成本加成定价</b>中，产品价格p通过在成本c：p = c + rc中加入比例利润来计划，其中r是计划利润率。</p>
+             <p>在有利的市场条件下，全部成本可用于成本加成定价，而在销售不佳期间（例如，由于竞争加剧），可以使用边际成本。 当产品的<a href="#PED" title="Price Elasticity of Demand">PED</a>发生变化时，可以调整利润率。 
+
+              例如，当天气条件阳光充足和温暖时，柠檬状态可以提高其计划利润率，因为在这种情况下，柠檬水的其他非常具有价格弹性的需求变得更加无弹性，从而允许价格上涨而不影响需求。 
+                .</p>
+         </details></li>
+         <li><details><summary>需求预测</summary>
+             <p>可以基于先前记录的每日需求数据来预测新一天的需求，其形成时间序列。 时间序列的两种最常见的预测方法是简单移动平均线和指数加权移动平均线方法。 请参阅https://people.duke.edu/~rnau/411avg.htm。 在LemonadeStand-1模型中，使用简单移动平均法。</p>
+         </details></li>
+         <li><details><summary>材料清单</summary>
+             <p>物料清单（BoM）以组件项目列表的形式定义产品的组成，每个组件项目都具有组装生产单元所需的数量。 通常，组件项也可以具有BoM，即由其他项组成，使得嵌套的组合树被删除。
+
+在以柠檬水作为产品的柠檬状态的情况下，生产单位可能是3.5升的柠檬水，因此我们可能有以下BoM：</p>
+             <pre>{"柠檬": 3, "水": 2.5, "冰块": 50, "糖": 0.3, "纸杯": 1}</pre>
+        </details></li>
+       <li><details><summary>生产计划</summary>
+         <p>生产数量（批次数）是根据需求预测计划的，但是在使用库存中的可用输入项目和可用于购买额外输入项目的预算的限制下。</p>
+        </details></li>
+     </ol>
+ </section>
+
+ <!--
+  <section class="mbd collapsed"><h1><span>►</span>概念模型 <sup class="expl-req">?</sup></h1>
+    <div id="expl-CM" class="expl"></div>
+    <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+      <div id="expl-CIM" class="expl"></div>
+      <p>潜在相关对象类型是:</p>
+      <ol>
+        <li>顾客</li>
+        <li>柠檬状态s,</li>
+        <li>suppliers.</li>
+      </ol>
+      <p></p>
+      <p>潜在的相关事件类型是:</p>
+      <ol>
+        <li>顾客到达</li>
+        <li>...,</li>
+      </ol>
+      <figure>
+        <img src="media/img/CIM.svg" width="600"/>
+        <figcaption>一个概念信息模型描述对象类型和事件类型。</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h1>概念流程模型 <sup class="expl-req">?</sup></h1>
+      <div id="expl-CPM" class="expl"></div>
+      <table>
+        <caption>事件规则</caption>
+        <thead>
+        <tr>
+          <th>ON（事件类型）</th><th>DO（事件路径）</th><th>Rule Diagram</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>顾客到达</td>
+          <td>If the service desk is busy, then the new customer queues up,
+            else the service starts.</td>
+          <td><img src="media/img/Arrival_CRM.svg" width="250"/></td>
+        </tr>
+        </tbody>
+      </table>
+      <p>The involved types of events can be related with each other via their (possibly conditional) temporal succession,
+       as visualized in the following BPMN process diagram:</p>
+      <figure>
+        <img src="media/img/CPM.svg" width="600"/>
+        <figcaption>A conceptual process diagram integrating the event rule diagrams.</figcaption>
+      </figure>
+    </section>
+  </section>
+ -->
+ <section class="mbd collapsed"><h1><span>►</span>模拟设计模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-DM" class="expl"></div>
+   <p>根据<a href="https://articles.jsime.org/1/1"><b>对象事件建模和仿真(OEM&amp;S)</b></a> 的图标,我们首先在系统的<b>信息模型</b>中对系统的对象类型（定义其状态结构）及其事件类型进行建模，然后在<b>流程模型</b>中以事件规则的形式对系统的动态进行建模。</p>
+
+   <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-IDM" class="expl"></div>
+     <p>LSG模型的基本版本包含以下对象类型：</p>
+     <ol>
+       <li><i>SingleProductCompany</i></li>
+       <li><i>InputItemType</i> 作为<i>ItemType</i>子类型</li>
+       <li><i>OutputItemType</i> 作为 <i>ItemType</i>子类型</li>
+     </ol>
+       <p>还有事件类型:</p>
+       <ol>
+           <li>StartOfDay</li>
+           <li>DailyDelivery</li>
+           <li>DailyDemand</li>
+           <li>EndOfDay</li>
+       </ol>
+     <figure>
+       <img src="img/IDM.svg" width="800"/>
+       <figcaption>描述对象类型和事件类型的信息设计模型。</figcaption>
+     </figure>
+     <p>请注意，组件类型<code> InputInventoryItem </code>和<code> BomItemPerBatch </code>可以以地图值属性<code> inputInventoryItems </code>和<code> bomItemsPerBatch </code>保存值。</p>
+     <pre>{"Lemon": 3, "Water": 2.5, "IceCubes": 50, "Sugar": 0.3, "PaperCup": 1}</pre>
+     <p>这些特殊属性以及<i> Single Product Company </i>实例的行为操作如下图所示：</p>
+       <figure>
+           <img src="img/OOCM.svg" width="400"/>
+           <figcaption>一个面向对象的类模型以及相关操作表现实例 <i>SingleProductCompany</i></figcaption>
+       </figure>
+   </section>
+   <section><h1>流程设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-PDM" class="expl"></div>
+     <table>
+       <caption>事件规则设计表</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>CustomerArrival( sd) @ t</td>
+         <td style="font-size:smaller">
+           INCREMENT sd.queueLength<br/>
+           IF sd.queueLength = 1<br/>
+           THEN SCHEDULE CustomerDeparture( sd) @ (t + sd.serviceDuration())
+         </td>
+       </tr>
+       </tbody>
+     </table>
+     <table>
+       <caption>从概念事件规则模型到 设计模型规则</caption>
+       <thead>
+        <tr><th>概念规则模型</th><th>设计模型规则</th></tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td><img src="media/img/Arrival_CRM.svg" width="250"/></td>
+         <td><img src="media/img/Arrival_RDM.svg" width="450"/></td>
+        </tr>
+        <tr>
+         <td><img src="media/img/ServiceStart_CRM.svg" width="250"/></td>
+          <td rowspan="2"><img src="media/img/Departure_RDM.svg" width="450"/></td>
+        </tr>
+        <tr>
+         <td><img src="media/img/ServiceEnd_CRM.svg" width="250"/></td>
+        </tr>
+       </tbody>
+     </table>
+     <figure>
+       <img src="media/img/PDM.svg" width="700"/>
+       <figcaption>一个流程设计模型来表示事件和设计模型规则。</figcaption>
+     </figure>
+   </section>
+ </section>
+
+ <section class="mbd collapsed"><h1><span>►</span>参见</h1>
+  <section><h1>针对相同系统/问题/域的其他对象事件模拟（OES）模型</h1>
+   <ol>
+     <!--
+     <li><a href="../1/index.html">ServiceDesk-1</a>: A service queue model
+       (one service and one queue) with two statistics: <i>maximum queue length</i> and <i>service utilization</i>.
+       The model abstracts away from individual customers and from the composition of the queue.</li>
+     -->
+     <li><a href="../2/index.html">服务前台-2（ServiceDesk-2）</a>: 具有一个统计信息的服务队列模型（一个服务和一个队列）：平均响应时间，即客户从到达到离开时在系统中花费的平均时间长度。 为了记录它们的到达时间，单个客户在<i>waitingCustomers</i>队列中明确表示。</li>
+   </ol>
+  </section>
+  <section><h1>使用其他框架实现的类似模型</h1>
+   <ol>
+      <li><a href="http://ccl.northwestern.edu/netlogo/models/community/Queueing_Simulation_Discrete_Event">队列模拟离散事件（Queueing_Simulation_Discrete_Event）</a>: 此NetLogo模拟使用NetLogo的tick-advance原语以非整数量推进仿真时间。 但是，NetLogo的标准刻度显示无法显示非整数值，因此必须编写自定义刻度显示。 版权所有2010，Nick Bennett。</li>
+   </ol>
+  </section>
+ </section>
+</body>
+</html>
+

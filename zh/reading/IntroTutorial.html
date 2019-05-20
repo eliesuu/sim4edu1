@@ -1,0 +1,721 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Web-Based Simulation with OESjs</title><link rel="stylesheet" type="text/css" href="../docbook.css"><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><meta name="description" content="This article shows how to create, and run, a discrete event simulation model with the JavaScript-based simulation framework OESjs available on Sim4edu.com, which implements the Object Event Simulation (OES) paradigm, representing a general Discrete Event Simulation approach based on object-oriented modeling and event scheduling. In OES, a model normally defines various types of objects and events, but OES also supports models without explicit events, using fixed-increment time progression corresponding to implicit time events (&#34;ticks&#34;), which is a popular approach in social science simulation. This tutorial is available in the following formats: HTML PDF"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><div><h1 class="title"><a name="d5e1"></a>Web-Based Simulation with OESjs</h1></div><div><h3 class="subtitle"><i>How to create and run simulations with the JavaScript-based simulation framework
+    <span class="italic">OESjs</span> available on <a class="link" href="https://sim4edu.com/" target="_top">sim4edu.com</a></i></h3></div><div><div class="authorgroup"><div class="author"><h3 class="author"><span class="firstname">Gerd</span> <span class="surname">Wagner</span></h3><code class="email">&lt;<a class="email" href="mailto:G.Wagner@b-tu.de">G.Wagner@b-tu.de</a>&gt;</code></div></div></div><div><p class="releaseinfo">Thanks to Luis Gustavo Nardin and Jakub Lelo for valuable feedback that helped to
+   improve this tutorial.</p></div><div><p class="copyright">Copyright &copy; 2017-19 Gerd Wagner</p></div><div><p class="pubdate">Published 2019-01-10</p></div><div><div class="abstract"><p class="title"><b>Abstract</b></p><p>This article shows how to create, and run, a discrete event simulation model with the
+    JavaScript-based simulation framework <span class="italic">OESjs</span> available on
+     <a class="link" href="https://sim4edu.com/" target="_top">Sim4edu.com</a>, which implements the <span class="italic">Object Event Simulation</span> (<a class="link" href="https://sim4edu.com/oes" target="_top">OES</a>) paradigm, representing a general <span class="italic">Discrete Event
+     Simulation</span> approach based on <span class="italic">object-oriented</span>
+    modeling and <span class="italic">event scheduling</span>. In OES, a model normally
+    defines various types of objects and events, but OES also supports models without explicit
+    events, using <span class="italic">fixed-increment time progression</span> corresponding
+    to implicit time events ("ticks"), which is a popular approach in social science
+    simulation.</p><p>This tutorial is available in the following formats: <a class="link" href="Tutorial.html" target="_top">HTML</a>
+    <a class="link" href="IntroTutorial.pdf" target="_top">PDF</a>
+    
+   </p></div></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="#d5e39">1. Introduction to Object Event Modeling</a></span></dt><dd><dl><dt><span class="section"><a href="#d5e80">1.1. Making a Conceptual Model</a></span></dt><dt><span class="section"><a href="#d5e127">1.2. Making a Simulation Design Model</a></span></dt></dl></dd><dt><span class="section"><a href="#d5e246">2. Making Object Event Simulations with <span class="italic">OESjs</span></a></span></dt><dd><dl><dt><span class="section"><a href="#d5e279">2.1. Simulation Time</a></span></dt><dt><span class="section"><a href="#d5e348">2.2. Simulation Models</a></span></dt><dt><span class="section"><a href="#d5e626">2.3.  Simulation Scenarios</a></span></dt><dt><span class="section"><a href="#d5e717">2.4. Simulation Configurations</a></span></dt><dt><span class="section"><a href="#d5e741">2.5. Statistics</a></span></dt><dt><span class="section"><a href="#d5e762">2.6. Simulation Experiments</a></span></dt><dt><span class="section"><a href="#d5e804">2.7. Animation</a></span></dt><dt><span class="section"><a href="#d5e849">2.8. Simulation Programming with OESjs</a></span></dt></dl></dd></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d5e39"></a>1.&nbsp;Introduction to Object Event Modeling</h2></div></div></div><p>Simulation is used widely today: in many scientific disciplines for investigating specific
+  research questions, in engineering for testing the performance of designs, in education for
+  providing interactive learning experiences, and in entertainment for making games. </p><p>For simulating a dynamic system one can model it in terms of </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>the types of objects it is composed of,</p></li><li class="listitem"><p>the types of events that are responsible for its dynamics,</p></li><li class="listitem"><p>the discrete state changes of objects caused by the occurrence of an event of some
+     type,</p></li><li class="listitem"><p>the follow-up events caused by the occurrence of an event of some type,</p></li><li class="listitem"><p>the continuous state changes of objects (described with the help of mathematical
+     functions).</p></li></ol></div><p> Many dynamic systems are examples of <span class="bold"><strong><span class="italic">discrete event systems</span></strong></span> (or <span class="italic">discrete dynamic
+   systems</span>), which consist of:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+					<span class="bold"><strong><span class="italic">objects</span></strong></span> (of various
+					types) whose states may be changed by </p></li><li class="listitem"><p>
+					<span class="bold"><strong><span class="italic">events</span></strong></span> (of various
+					types) occurring at some point in time. </p></li></ul></div><p> This means that in order to model a discrete event system, we have to </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>describe its <span class="bold"><strong><span class="italic">object
+						types</span></strong></span> and <span class="bold"><strong><span class="italic">event types</span></strong></span> (in an information
+					model);</p></li><li class="listitem"><p>specify, for any event type, the <span class="bold"><strong><span class="italic">state
+							changes</span></strong></span> of objects and the <span class="bold"><strong><span class="italic">follow-up events</span></strong></span> caused
+					by the occurrence of an event of that type (in a process model).</p></li></ol></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e80"></a>1.1.&nbsp;Making a Conceptual Model</h3></div></div></div><p>Let's look at an example. We model a system of one or more <span class="italic">service
+    desks</span>, each of them having its own queue, as a discrete event system:</p><div class="informalfigure-float" style="float: right;"><div class="informalfigure"><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;" width="200"><tr><td><img src="service-desk.svg" width="200"></td></tr></table></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Customers arrive at a service desk at random times.</p></li><li class="listitem"><p>If there is no other customer in front of them, and the service desk is available, they
+     are served immediately, otherwise they have to queue up in a waiting line.</p></li><li class="listitem"><p>The duration of services varies, depending on the individual case. </p></li><li class="listitem"><p>When a service is completed, the customer departs and the next customer is
+					served, if there is still any customer in the queue.</p></li></ul></div><p> The potentially relevant <span class="bold"><strong>object types</strong></span> of the problem
+   domain are:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="italic">Customer</span>,</p></li><li class="listitem"><p><span class="italic">ServiceDesk</span>,</p></li><li class="listitem"><p><span class="italic">WaitingLine</span>,</p></li><li class="listitem"><p><span class="italic">ServiceClerk</span>, if the service is performed
+					by (one or more) clerks.</p></li></ul></div><p>The potentially relevant <span class="bold"><strong>event types</strong></span> are:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="italic">CustomerArrival</span>,</p></li><li class="listitem"><p><span class="italic">StartOfService</span>,</p></li><li class="listitem"><p><span class="italic">EndOfService</span>,</p></li><li class="listitem"><p><span class="italic">CustomerDeparture</span>.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e127"></a>1.2.&nbsp;Making a Simulation Design Model</h3></div></div></div><p>When making a simulation model, the right degree of abstraction depends on the purpose of
+   the model. But abstracting away from too many things may make a model too unnatural and not
+   sufficiently generic, implying that it cannot be easily extended to model additional features
+   (such as more than one service desk).</p><p>In our example, the purpose of the simulation model is to compute the maximum queue length
+   (and possibly also the service utilization), only. So, we may abstract away from the following
+   object types:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="italic">Customer</span>: we don't need any information
+					about individual customers.</p></li><li class="listitem"><p><span class="italic">WaitingLine</span>: we don't need to know who is
+					next, it's sufficient to know the length of the queue.</p></li><li class="listitem"><p><span class="italic">ServiceClerk</span>: we don't need any information
+					about the service clerk(s).</p></li></ul></div><p>Notice that, for simplicity, we consider the customer that is currently being served to be
+   part of the queue. In this way, in the simulation program, we can check if the service desk is
+   busy by testing if the length of the queue is greater than 0. In fact, for being able to compute
+   the service utilization and the maximum queue length, the queue length is the only relevant state
+   variable. </p><p>State variables can be modeled in the simple form of global variables or in the form of
+   attributes of suitable object types. Consequently, the simplest model we can make for the given
+   problem has only one global variable: <span class="italic">queueLength</span>. But, as an
+   alternative, we will also model the system state in terms of (one or more) <span class="italic">ServiceDesk</span> objects having only one property: <span class="italic">queueLength</span>. As opposed to the simpler model defining <span class="italic">queueLength</span> as a global variable, this model allows to define simulation scenarios
+   with two or more service desks.</p><p>We also look for opportunities to simplify our event model by dropping event types that are
+   not needed, e.g., because their events temporally coincide with events of another type. This is
+   the case with <span class="italic">EndOfService</span> and <span class="italic">CustomerDeparture</span> events. Consequently, we can drop the event type <span class="italic">EndOfService</span>.</p><p>There are two situations when a new service can be started: either when the waiting
+			line is empty and a new customer arrives, or when the waiting line is not empty and a
+			service ends. Therefore, any <span class="italic">StartOfService</span> event
+			immediately follows either a <span class="italic">CustomerArrival</span> or a
+				<span class="italic">CustomerDeparture</span> event, and we may abstract away
+			from the <span class="italic">StartOfService</span> event and drop it from the
+			model. </p><p>So we only need to model two event types: <span class="italic">CustomerArrival</span> and <span class="italic">CustomerDeparture</span>.</p><p>The event type <span class="italic">CustomerArrival</span> is an example of a type of
+    <span class="bold"><strong><span class="italic">exogenous</span></strong></span> events, which are
+   not caused by any causal regularity of the system under investigation and, therefore, have to be
+   modeled with a <span class="bold"><strong><span class="italic">recurrence</span></strong></span>
+   function that allows to compute the time of the next occurrence of an event of that type. In OES,
+   exogenous event types are a built-in concept such that an OES simulator takes care of creating
+   the next exogenous event whenever an event of that type is processed. This mechanism makes sure
+   that there is a continuous stream of exogenous events throughout a simulation run.</p><p>We also have to model the random variations of two variables: (1) the recurrence of (that
+   is, the time in-between two) customer arrival events and (2) the service duration. In a class
+   model, such random variables can be defined as special class-level ("static") operations, with a
+   stereotype &laquo;rv&raquo;, in the class to which they belong, as shown in the diagrams below.</p><p>We model the recurrence of customer arrival events as a discrete random variable with a
+   uniform distribution between 1 and 6 (minutes), which we express in the class diagram of the
+   information design model by appending the symbolic expression <span class="italic">U{1-6}</span> within curly braces to the operation declaration (following the UML syntax
+   for property/method modifiers).</p><p>We model the service duration random variable with an empirical distribution of 2 (minutes)
+   with probability 0.3, 3 (minutes) with probability 0.5 and 4 (minutes) with probability 0.2,
+   using the symbolic expression <span class="italic">Emp{2:0.3, 3:0.5, 4:0.2}</span>. </p><p>Computationally, object types and event types correspond to classes, either of an
+   object-oriented information model, such as a UML class diagram, or of a computer program written
+   in an object-oriented programming language, such as Java or JavaScript.  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e171"></a>1.2.1.&nbsp;Modeling <span class="italic">queueLength</span> as a global variable </h4></div></div></div><p>As discussed above, the simplest model for the service desk problem with maximum queue
+    length statistics (available in the Sim4edu library as <a class="link" href="https://sim4edu.com/sims/14" target="_top">ServiceDesk-0</a>) has only one global variable:
+     <span class="italic">queueLength</span>, a non-negative integer, and a global function
+    for computing the random service duration, but no object type.</p><div class="informalfigure"><div class="mediaobject"><img src="IDM0.svg"></div></div><p>In addition to an information model, which captures the system's state structure, we also
+    need to make a <span class="italic">process model</span> that captures the dynamics of
+    the service desk system. The dynamics of a system consists of events triggering state changes
+    and follow-up events. A process model can be expressed with the help of event rules, which
+    define what happens when an event (of a certain type) occurs, or, more specifically, which state
+    changes and which follow-up events are caused by an event of that type. </p><p>Event rules can be expressed with the help of pseudo-code or in process diagrams, or in a
+    simulation or programming language. The following table shows the two event rules defining the
+    transition logic of a service desk system, expressed in pseudo-code.</p><div class="informaltable"><table frame="box" rules="all"><thead><tr>
+      <th>ON (event type)</th>
+      <th>DO (event routine)</th>
+     </tr></thead><tbody><tr>
+      <td>
+       <p>CustomerArrival @ t</p>
+      </td>
+      <td>
+       <pre class="programlisting">INCREMENT queueLength
+IF queueLength = 1 
+THEN
+  sTime = serviceDuration() 
+  SCHEDULE CustomerDeparture @ (t + sTime)</pre>
+      </td>
+     </tr><tr>
+      <td>
+       <p>CustomerDeparture @ t</p>
+      </td>
+      <td>
+       <pre class="programlisting">DECREMENT queueLength
+IF queueLength &gt; 0
+THEN 
+  sTime = serviceDuration() 
+  SCHEDULE CustomerDeparture @ (t + sTime)</pre>
+      </td>
+     </tr></tbody></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e200"></a>1.2.2.&nbsp;Modeling <span class="italic">queueLength</span> as an attribute of an object type
+     <span class="italic">ServiceDesk</span>
+   </h4></div></div></div><p>In our extended model (<a class="link" href="https://sim4edu.com/sims/1" target="_top">ServiceDesk-1</a>)
+    we represent the state variable <span class="italic">queueLength</span> as an attribute
+    of an object type <span class="italic">ServiceDesk</span>. This results in a model with
+    three classes, the object class <span class="italic">ServiceDesk</span> with an attribute
+     <span class="italic">queueLength</span>, and the event classes <span class="italic">CustomerArrival</span> and <span class="italic">CustomerDeparture</span>, both with
+    a reference property <span class="italic">serviceDesk</span> for referencing the service
+    desk at which an event occurs. When we also want to compute the service utilization statistics,
+    we need to add an attribute <span class="italic">serviceTime</span> to the <span class="italic">CustomerDeparture</span> class for being able to update the service
+    utilization statistics when a customer departs.</p><p>Both event types, <span class="italic">CustomerArrival</span> and <span class="italic">CustomerDeparture</span>, now have a many-to-one association with the object
+    type <span class="italic">ServiceDesk</span>. This expresses the fact that any such event
+    occurs at a particular service desk, which participates in the event. This association is
+    implemented in the form of a reference property <span class="italic">serviceDesk</span>
+    in each of the two event types, as shown in the following diagram:</p><div class="informalfigure"><div class="mediaobject"><img src="IDM1.svg"></div></div><p>In addition to an information model, we need to make a process model, which captures the
+    dynamics of the service desk system consisting of arrival and departure events triggering state
+    changes and follow-up events. </p><p>The following table shows the two event rules, which now account for the fact that both
+    types of events occur at a particular service desk that is referenced by the event expression
+    parameter <span class="italic">sd</span>.</p><div class="informaltable"><table frame="box" rules="all"><thead><tr>
+      <th>ON (event type)</th>
+      <th>DO (event routine)</th>
+     </tr></thead><tbody><tr>
+      <td>
+       <p>CustomerArrival( sd) @ t</p>
+       <p>with sd : ServiceDesk</p>
+      </td>
+      <td>
+       <pre class="programlisting">INCREMENT sd.queueLength
+IF sd.queueLength = 1 
+THEN
+  sTime = ServiceDesk.serviceDuration() 
+  SCHEDULE CustomerDeparture( sTime, sd) @(t + sTime)</pre>
+      </td>
+     </tr><tr>
+      <td>
+       <p>CustomerDeparture( sd) @ t</p>
+       <p>with sd : ServiceDesk</p>
+      </td>
+      <td>
+       <pre class="programlisting">DECREMENT sd.queueLength
+IF sd.queueLength &gt; 0
+THEN 
+  sTime = ServiceDesk.serviceDuration() 
+  SCHEDULE CustomerDeparture( sTime, sd) @(t + sTime)</pre>
+      </td>
+     </tr></tbody></table></div><p>In the next section, we discuss how to implement this simple model of a service desk system
+    with the OESjs simulation framework.</p></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d5e246"></a>2.&nbsp;Making Object Event Simulations with <span class="italic">OESjs</span></h2></div></div></div><p>The <a class="link" href="https://sim4edu.com/" target="_top">Simulation for Education (Sim4edu)</a> project
+  website supports web-based simulation with open source technologies for science and education. It
+  provides technologies, such as simulation libraries, frameworks, and simulators, as well as a
+  collection of simulation examples. One important goal of Sim4edu is to facilitate building
+  state-of-the-art user interfaces for simulations and simulation games without requiring simulation
+  developers to learn all the recent web technologies involved (e.g., HTML5, CSS3, SVG and
+  WebGL).</p><p>The JavaScript-based simulation framework <span class="italic">OESjs</span> implements
+  the <span class="italic">Object Event Simulation (<a class="link" href="https://sim4edu.com/OES" target="_top">OES</a>)</span> paradigm, representing a general <span class="italic">Discrete Event
+   Simulation</span> approach based on <span class="italic">object-oriented</span>
+  modeling and <span class="italic">event scheduling</span>. In OES, a model normally defines
+  various types of objects and events, but OES also supports </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>models without objects, if they define state variables in the form of global <span class="italic">model variables</span>, instead;</p></li><li class="listitem"><p>models without events, if they use pure fixed-increment time progression (by defining an
+      <code class="code">onEachTimeStep</code> procedure and a <code class="code">timeIncrement</code> parameter), instead;
+     such a model can be used </p><div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem"><p>as a discrete model that abstracts away from explicit events and uses only implicit
+        time events ("ticks"), which is a popular approach in social science simulation, or</p></li><li class="listitem"><p>for modeling continuous state changes (e.g. objects moving in a continuous
+        space).</p></li></ol></div></li></ol></div><p>OESjs supports two forms of simulations:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Standalone scenario simulations, which are good for getting a quick impression of a
+    simulation model, e.g., by checking some simple statistics or by observing visualized (or
+    sonified) simulation runs.</p></li><li class="listitem"><p>Simulation experiments, which are defined as a set of simulation scenarios by defining value sets
+    for certain model variables, such that an experiment run consists of a set of scenario runs.</p></li></ol></div><p>Using a simulation framework like OESjs means that only the model-specific logic has to be coded
+  (in the form of object types, event types, event routines and other functions for model-specific
+  computations), but not the general simulator operations (e.g. time progression and statistics) and
+  the environment handling (e.g. user interfaces for statistics output and visualization).</p><p>The following sections present the basic concepts of the OESjs simulation framework, and show
+  how to implement the service desk models described in the previous section.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e279"></a>2.1.&nbsp;Simulation Time</h3></div></div></div><p>A simulation model has an underlying <span class="bold"><strong><span class="italic">time
+     model</span></strong></span>, which can be either <span class="italic">discrete
+    time</span>, when setting</p><pre class="programlisting">sim.model.time = "discrete";</pre><p>or <span class="italic">continuous time</span>, when setting</p><pre class="programlisting">sim.model.time = "continuous";</pre><p>Choosing a discrete time model means that time is measured in steps (with equal durations),
+   and all temporal random variables used in the model need to be discrete (i.e., based on discrete
+   probability distributions). Choosing a continuous time model means that one has to define a
+    <span class="italic">simulation time granularity</span>, as explained in the next
+   sub-section.</p><p>In both cases, the underlying simulation <span class="bold"><strong><span class="italic">time
+     unit</span></strong></span> can be either left unspecified (e.g., in the case of an abstract
+   time model), or it can be set to one of the (calendaric) time units "ms", "s", "m", "h", "D",
+   "W", "M" or "Y", as in</p><pre class="programlisting">sim.model.timeUnit = "h";</pre><p>Typical examples of time models are:  </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>An abstract discrete model of time where time runs in steps without any concrete meaning: </p><pre class="programlisting">sim.model.time = "discrete";</pre></li><li class="listitem"><p>A concrete discrete model of time in number of days: </p><pre class="programlisting">sim.model.time = "discrete";
+sim.model.timeUnit = "D";</pre></li><li class="listitem"><p>A concrete continuous model of time in number of seconds: </p><pre class="programlisting">sim.model.time = "continuous";
+sim.model.timeUnit = "s";</pre></li></ol></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e306"></a>2.1.1.&nbsp;Time Granularity</h4></div></div></div><p>When a simulation model is based on continuous time, it is possible to control the time
+    granularity (the time delay until the next moment) in one of two ways:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>through simulation time rounding by setting the model parameter <span class="italic">timeRoundingDecimalPlaces</span> to a suitable value, which implies a corresponding
+       value of the model parameter <span class="italic">nextMomentDeltaT</span>;</p></li><li class="listitem"><p>by explicitly setting the model parameter <span class="italic">nextMomentDeltaT</span>.</p></li></ol></div><p>The model parameter <span class="italic">nextMomentDeltaT</span> is used by the
+    simulator for scheduling next events with a minimal delay.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e319"></a>2.1.2.&nbsp;Time Progression</h4></div></div></div><p>An important issue in simulation is the question how the simulation time is advanced by the
+    simulator. The OES paradigm supports <span class="italic"><span class="bold"><strong>fixed-increment</strong></span> time progression</span> and <span class="italic"><span class="bold"><strong>next-event</strong></span> time progression</span>, and their combination. </p><p>An OESjs model with pure fixed-increment time progression defines an
+     <code class="code">OnEachTimeStep</code> procedure and a <code class="code">timeIncrement</code> parameter, but no event
+    types. Such a model can be used </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>for modeling continuous state changes (e.g. objects moving in a continuous space),
+       or</p></li><li class="listitem"><p>as a discrete model that abstracts away from explicit events and uses only implicit
+       periodic time events ("ticks"), which is a popular approach in social science simulation.
+      </p></li></ol></div><p>A simulation model with pure next-event time progression, representing a classical DES
+    model, defines event types and event rules, but no <span class="italic">timeIncrement</span> parameter.</p><p>It is also possible to combine both time progression mechanisms, e.g., in a "hybrid" model
+    that supports both discrete and continuous state changes, or in a social science model based on
+    "ticks" and explicit events.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e337"></a>2.1.3.&nbsp;Real-Time Simulation</h4></div></div></div><p>Real-time simulation means to run an observable simulation model in such a way that the
+    speed of its state changes is close to the speed of the state changes in the simulated
+    real-world system. This is only possible if the simulator is able to run the simulation at least
+    as fast as the real-world system is running. If this is the case, the running simulator can be
+    slowed down to real-time speed. </p><p>Real-time simulation requires fixed-increment time progression by setting the model
+    parameter <span class="italic">timeIncrement</span>. In the case of a model with a
+     <span class="italic">timeUnit</span> and real-time simulation turned on (by setting the
+    scenario parameter <span class="italic">realtimeFactor</span> to 1), the simulator delays
+    each simulation step such that its real duration is equal to its simulation time, which is
+     <span class="italic">timeIncrement</span> [timeUnit]. </p><p>In the case of a model without a <span class="italic">timeUnit</span> (that is, with
+    abstract time), the simulator cannot automatically run in real-time, but the scenario parameter
+     <span class="italic">stepDuration</span> (for specifying the real duration of a
+    simulation step) can be set to a suitable value for making the simulation observable in
+    real-time.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e348"></a>2.2.&nbsp;Simulation Models</h3></div></div></div><p>A <span class="italic">simulation model</span> essentially defines the state
+   structure and the dynamics of the simulated system. While the system's state structure is defined
+   by the types of objects that populate it, its dynamics is defined by certain types of events and
+   the state changes and follow-up events caused by them. We model the <span class="italic">state
+    structure</span> of a simulated system with the help of global variables and object types,
+   and we model its <span class="italic">dynamics</span> with the help of event types and
+   event rules, such that, for any event type, an event rule specifies the <span class="italic">state changes</span> of affected objects and the <span class="italic">follow-up
+    events</span> caused by the occurrence of an event of that type. </p><p>In the OES approach, a <span class="italic"><span class="bold"><strong>simulation
+     model</strong></span></span> essentially consists of:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>a <span class="italic">time model</span> (either <span class="italic">discrete</span> or <span class="italic">continuous</span> time);</p></li><li class="listitem"><p>a <span class="italic">space model</span>, if the simulation is
+      about objects located in some space;</p></li><li class="listitem"><p>(global) <span class="italic">model variable</span> and <span class="italic">function</span> definitions;</p></li><li class="listitem"><p>a set of <span class="italic">object type</span> and <span class="italic">event
+       type</span> definitions;</p></li><li class="listitem"><p>a set of <span class="italic">event rules</span>, which capture causal
+      regularities governing the causation of system state changes and follow-up events.</p></li></ol></div><p>An OESjs version 1 model can also include definitions of <span class="italic">activity types</span>
+  and <span class="italic">Processing Networks</span>. The built-in activity concept allows modeling ongoing actions. 
+  A Processing Network, consisting of entry nodes, processing nodes and exit nodes, facilitates the modeling of discrete manufacturing systems
+  and service systems.</p><p>In version 2, OESjs will support modeling <span class="italic">agents</span> with beliefs, <span class="italic">perceptions</span> and <span class="italic">actions</span>, as well as message-based
+   <span class="italic">communication</span>.</p><p>We now show how to define (global) model variables and  functions as well as object types and event
+   types, as defined by an information design model discussed in the previous section.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e388"></a>2.2.1.&nbsp;Model Variables and Functions</h4></div></div></div><p>In the simple model of a service desk discussed in the previous section, we define one
+    (global) model variable, <span class="italic">queueLength</span>, one model function,
+     <span class="italic">serviceDuration()</span>, and two event types, as shown in the
+    following class diagram:</p><div class="figure"><a name="d5e393"></a><p class="title"><b>Figure&nbsp;1.&nbsp;The simple service desk model with <span class="italic">queueLength</span> as a
+     global variable.</b></p><div class="figure-contents"><div class="mediaobject"><img src="IDM0.svg" alt="The simple service desk model with queueLength as a global variable."></div></div></div><br class="figure-break"><p>Notice that this model does not define any object type, which implies that the system state
+    does not consist of any object, but only of one state variable, <span class="italic">queueLength</span>.  The model can be coded with OESjs in the following way:</p><pre class="programlisting">// (global) model variable
+sim.model.v.queueLength = {
+  range:"NonNegativeInteger", 
+  label:"Queue length", 
+  shortLabel:"qLen", 
+  initialValue: 0
+};
+// global function
+sim.model.f.serviceDuration = function () {
+  var r = rand.uniformInt( 0, 99);
+  if ( r &lt; 30) return 2;         // probability 0.30
+  else if ( r &lt; 80) return 3;    // probability 0.50
+  else return 4;                 // probability 0.20
+};
+</pre><p>When a model variable is defined like <code class="code">sim.model.v.queueLength = ...</code>, its value
+    can be accessed at simulation runtime with the expression <code class="code">sim.v.queueLength</code>. 
+	A variable is shown in the user interface for model variables, whenever a <code class="code">label</code> 
+	is defined for it. A variable's value is shown in the simulation log, whenever a <code class="code">shortLabel</code> 
+	is defined for it. By default, the size of the variable's input field is 7. It can be changed by 
+	setting the property <code class="code">inputFieldSize</code> in the variable definition.</p><p>You can <a class="link" href="https://sim4edu.com/sims/14" target="_top">run this simulation model</a> and
+     <a class="link" href="https://sim4edu.com/sims/14/Download.zip" target="_top">download its code</a> from the sim4edu.com
+    website.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e411"></a>2.2.2.&nbsp;Object Types</h4></div></div></div><p>Object types are defined in the form of classes. More precisely, they are defined as
+    instances of the meta-class <span class="italic">cLASS</span>. Consider the object type
+     <span class="italic">ServiceDesk</span> defined in the following model:</p><div class="figure"><a name="d5e416"></a><p class="title"><b>Figure&nbsp;2.&nbsp;The service desk model with <span class="italic">queueLength</span> as an
+     attribute.</b></p><div class="figure-contents"><div class="mediaobject"><img src="IDM1.svg" alt="The service desk model with queueLength as an attribute."></div></div></div><br class="figure-break"><p>The object type <span class="italic">ServiceDesk</span> is defined with an attribute
+     <code class="code">queueLength</code>:</p><pre class="programlisting">var <span class="bold"><strong>ServiceDesk</strong></span> = new cLASS({
+  Name: "ServiceDesk",
+  supertypeName: "oBJECT",
+  properties: {
+    "<span class="bold"><strong>queueLength</strong></span>": { range: "NonNegativeInteger", 
+        label: "Queue length", shortLabel: "qlen"}
+  }
+});</pre><p>Notice that, in OESjs, object types are defined as subtypes of the pre-defined class
+     <code class="code">oBJECT</code>, from which they inherit an integer-valued <code class="code">id</code> attribute and an
+    optional <code class="code">name</code> attribute. A property may have both a <code class="code">label</code> and a
+     <code class="code">shortLabel</code>. The <code class="code">label</code> is used for user interface fields, while the
+     <code class="code">shortLabel</code> is used in the simulation log, which only logs those objects and
+    properties that do have a <span class="italic">shortLabel</span>.</p><p>The discrete random variable for modeling random service durations, which samples integers
+    between 2 and 4 from the empirical probability distribution <span class="italic">Emp{2:0.3,
+     3:0.5, 4:0.2}</span>, is implemented as a class-level function <code class="code">serviceDuration</code>
+    in the <span class="italic">ServiceDesk</span>
+    class:</p><pre class="programlisting">ServiceDesk.<span class="bold"><strong>serviceDuration</strong></span> = function () {
+  var r = rand.uniformInt( 0, 99);
+  if ( r &lt; 30) return 2;         // probability 0.30
+  else if ( r &lt; 80) return 3;    // probability 0.50
+  else return 4;                 // probability 0.20
+};</pre><p>You can <a class="link" href="https://sim4edu.com/sims/1" target="_top">run this simulation model</a> and
+     <a class="link" href="https://sim4edu.com/sims/1/Download.zip" target="_top">download its code</a> from the sim4edu.com
+    website.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e446"></a>2.2.3.&nbsp;Event Types</h4></div></div></div><p>We distinguish between two kinds of events: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p><span class="italic">caused</span> events are caused by other events occurring
+       during a simulation run;</p></li><li class="listitem"><p><span class="italic">exogenous</span> events seem to happen spontaneously, but
+       may be caused by factors, which are external to the simulation model.</p></li></ol></div><p>Here is an example of an exogenous event type definition:</p><pre class="programlisting">var <span class="bold"><strong>CustomerArrival</strong></span> = new cLASS({
+  Name: "CustomerArrival",
+  supertypeName: "eVENT",
+  <span class="bold"><strong>properties</strong></span>: {
+    "serviceDesk": {range: "ServiceDesk"}
+  },
+  <span class="bold"><strong>methods</strong></span>: {
+    "onEvent": function () {
+      ...
+    }
+  }
+});</pre><p>Notice that the event type includes a reference property <code class="code">serviceDesk</code>, which is
+    used for referencing the service desk object at which an event occurs. Each event type needs to
+    define an <span class="italic">onEvent</span> method, which implements the event rule for
+    events of the defined type. Event rules are discussed below.</p><p>Exogenous events occur periodically. They are therefore defined with a <span class="italic">recurrence</span> function, which provides the time in-between two events
+    (often in the form of a random variable). The <span class="italic">recurrence</span>
+    function is defined as a class-level method:</p><pre class="programlisting">CustomerArrival.<span class="bold"><strong>recurrence</strong></span> = function () {
+  return rand.uniformInt( 1, 6); 
+};</pre><p>Notice that the <span class="italic">recurrence</span> method of <span class="italic">CustomerArrival</span> is coded with the library method
+     <code class="code">rand.uniformInt</code>, which allows sampling discrete uniform probability distribution
+    functions (the <code class="code">rand</code> library provides several other PDF sampling methods as
+    explained below). The OESjs simulator automatically creates the next <span class="italic">CustomerArrival</span> event by invoking the <span class="italic">recurrence</span>
+    function for setting its <span class="italic">ocurrenceTime</span> and by copying all
+    participant references (such as the <span class="italic">serviceDesk</span> reference).
+    Only if an exogenous event type has additional properties, a <span class="italic">createNextEvent</span> method has to be defined for assigning all properties and returning
+    the next event of that type. Whenever the simulator finds such a method, it will be invoked for
+    creating corresponding exogenous events.</p><p>In our example model of a service desk system, any <span class="italic">customer
+     departure</span> event is caused, either by a customer arrival event or by a preceding
+     <span class="italic">service start</span> event. </p><pre class="programlisting">var <span class="bold"><strong>CustomerDeparture</strong></span> = new cLASS({
+  Name: "CustomerDeparture",
+  supertypeName: "eVENT",
+  <span class="bold"><strong>properties</strong></span>: {
+    "serviceTime": {range: "NonNegativeInteger"},
+    "serviceDesk": {range: "ServiceDesk"}
+  },
+  <span class="bold"><strong>methods</strong></span>: {
+    "onEvent": function () {
+      ...
+  }
+});</pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e485"></a>2.2.4.&nbsp;Event Rules</h4></div></div></div><p>An event rule for an event type defines what happens when an event of that type occurs, by
+    specifying the caused state changes and follow-up events. In OESjs, an event rule for an event
+    type is defined as a method <code class="code">onEvent</code> of the class that implements the event type.
+    This method, which is also called <span class="italic">event routine</span>, returns a
+    set of events (more precisely, a set of JS objects representing events). </p><p>The following event rule method is defined in the <code class="code">CustomerArrival</code> class. </p><pre class="programlisting">// CustomerArrival event rule
+"<span class="bold"><strong>onEvent</strong></span>": function () {
+  var srvTm=0, changes = [], events = [];
+  this.serviceDesk.queueLength++;
+  sim.stat.arrivedCustomers++;
+  // if the service desk is not busy
+  if (this.serviceDesk.queueLength === 1) {
+    srvTm = ServiceDesk.serviceDuration();
+    events.push( new CustomerDeparture({
+      occTime: this.occTime + srvTm,
+      serviceTime: srvTm,
+      serviceDesk: this.serviceDesk
+    }));
+  }
+  return events;
+}</pre><p>The context of this event rule method is the event that triggers the rule, that is, the
+    variable <code class="code">this</code> references a JS object that represents the triggering event. Thus,
+    the expression <code class="code">this.serviceDesk</code> refers to the service desk object associated with
+    the current customer arrival event, and the statement
+     <code class="code">this.serviceDesk.queueLength++</code> increments the <span class="italic">queueLength</span> attribute of this service desk object (as an immediate state
+    change).</p><p>The following event rule method is defined in the <code class="code">CustomerDeparture</code> class. </p><pre class="programlisting">// CustomerDeparture event rule
+"<span class="bold"><strong>onEvent</strong></span>": function () {
+  var changes = [], events = [], srvTm=0;
+  // remove customer from queue
+  this.serviceDesk.queueLength--;
+  // if there are still customers waiting
+  if (this.serviceDesk.queueLength &gt; 0) {
+    // start next service and schedule its end/departure
+    srvTm = ServiceDesk.serviceDuration();
+    events.push( new CustomerDeparture({
+      occTime: this.occTime + srvTm,
+      serviceTime: srvTm,
+      serviceDesk: this.serviceDesk
+    }));
+  }
+  sim.stat.departedCustomers++;
+  sim.stat.totalServiceTime += this.serviceTime;
+  return events;
+}</pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e503"></a>2.2.5.&nbsp;Event Priorities</h4></div></div></div><p>An OES model may imply the possibility of several events occurring at the same time.
+    Consequently, a simulator (like OESjs) must be able to process simultaneous events. In
+    particular, simulation models based on discrete time may create simulation states where two or
+    more events occur at the same time, but the model's logic requires them to be processed in a
+    certain order. Defining priorities for events of a certain type helps to control the processing
+    order of simultaneous events.</p><p>Consider an example model based on discrete time with three exogenous event types <span class="italic">StartOfMonth</span>, <span class="italic">EachDay</span> and <span class="italic">EndOfMonth</span>, where the recurrence of StartOfMonth and EndOfMonth is 21,
+    and the recurrence of EachDay is 1. In this example we want to control that on simulation time 1
+    + <span class="italic">i</span> * 21 both a StartOfMonth and an EachDay event occur
+    simultaneously, but StartOfMonth should be processed before EachDay, and on simulation time 21 +
+     <span class="italic">i</span> * 21 both an EndOfMonth and an EachDay event occur
+    simultaneously, but EndOfMonth should be processed after EachDay. This can be achieved by
+    defining a high priority, say 2, to StartOfMonth, a middle priority, say 1, to StartOfMonth, and
+    a low priority, say 0, to EndOfMonth. </p><p>Event priorities are defined as class-level properties of event classes in the event type
+    definition file. Thus, we would define in <code class="filename">StartOfMonth.js</code>:</p><pre class="programlisting">StartOfMonth.priority = 2;</pre><p>and in <code class="filename">EachDay.js</code>:</p><pre class="programlisting">EachDay.priority = 1;</pre><p>and finally in <code class="filename">EndOfMonth.js</code>:</p><pre class="programlisting">EndOfMonth.priority = 0;</pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e521"></a>2.2.6.&nbsp;Library Methods for Sampling Probability Distribution Functions</h4></div></div></div><p>Random variables are implemented as methods that sample specific probability distribution
+    functions (PDFs). Simulation frameworks typically provide a library of predefined parametrized
+    PDF sampling methods, which can be used with one or several (possibly seeded) streams of <a class="link" href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator" target="_top">pseudo-random
+     numbers</a>. </p><p>The OESjs simulator provides the following predefined parametrized PDF sampling methods: </p><div class="informaltable"><table frame="box" rules="all"><thead><tr>
+      <th>Probability Distribution Function</th>
+      <th>OESjs Library Method</th>
+      <th>Example</th>
+     </tr></thead><tbody><tr>
+      <td><a class="link" href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)" target="_top">Uniform</a></td>
+      <td><code class="code">uniform</code>( <span class="italic">lowerBound</span>, <span class="italic">upperBound</span>)</td>
+      <td><code class="code">rand.uniform( 0.5, 1.5)</code></td>
+     </tr><tr>
+      <td><a class="link" href="https://en.wikipedia.org/wiki/Discrete_uniform_distribution" target="_top">Discrete
+        Uniform</a></td>
+      <td><code class="code">uniformInt</code>( <span class="italic">lowerBound</span>, <span class="italic">upperBound</span>)</td>
+      <td><code class="code">rand.uniformInt( 1, 6)</code></td>
+     </tr><tr>
+      <td><a class="link" href="https://en.wikipedia.org/wiki/Triangular_distribution" target="_top">Triangular</a></td>
+      <td><code class="code">triangular</code>( <span class="italic">lowerBound</span>, <span class="italic">upperBound</span>, <span class="italic">mode</span>)</td>
+      <td><code class="code">rand.triangular( 0.5, 1.5, 1.0)</code></td>
+     </tr><tr>
+      <td><a class="link" href="https://en.wikipedia.org/wiki/Triangular_distribution" target="_top">Frequency</a></td>
+      <td><code class="code">frequency</code>( <span class="italic">frequencyMap</span>)</td>
+      <td><code class="code">rand.frequency({"2":0.4, "3":0.6})</code></td>
+     </tr><tr>
+      <td><a class="link" href="http://en.wikipedia.org/wiki/Exponential_distribution" target="_top">Exponential</a></td>
+      <td><code class="code">exponential</code>( <span class="italic">eventRate</span>)</td>
+      <td><code class="code">rand.exponential( 0.5)</code></td>
+     </tr><tr>
+      <td><a class="link" href="https://en.wikipedia.org/wiki/Gamma_distribution" target="_top">Gamma</a></td>
+      <td><code class="code">gamma</code>( <span class="italic">shape</span>, <span class="italic">scale</span>)</td>
+      <td><code class="code">rand.gamma( 1.0, 2.0)</code></td>
+     </tr><tr>
+      <td><a class="link" href="https://en.wikipedia.org/wiki/Normal_distribution" target="_top">Normal</a></td>
+      <td><code class="code">normal</code>( <span class="italic">mean</span>, <span class="italic">stdDev</span>)</td>
+      <td><code class="code">rand.normal( 1.5, 0.5)</code></td>
+     </tr><tr>
+      <td><a class="link" href="https://en.wikipedia.org/wiki/Pareto_distribution" target="_top">Pareto</a></td>
+      <td><code class="code">pareto</code>( <span class="italic">shape</span>)</td>
+      <td><code class="code">rand.pareto( 2.0)</code></td>
+     </tr><tr>
+      <td><a class="link" href="https://en.wikipedia.org/wiki/Weibull_distribution" target="_top">Weibull</a></td>
+      <td><code class="code">weibull</code>( <span class="italic">scale</span>, <span class="italic">shape</span>)</td>
+      <td><code class="code">rand.weibull( 1, 0.5)</code></td>
+     </tr></tbody></table></div><p>The OESjs library <code class="filename">rand.js</code> supports both unseeded and seeded random
+    number streams. By default, its PDF sampling methods are based on an unseeded stream, using
+    Marsaglia&#8217;s high-performance random number generator <a class="link" href="https://en.wikipedia.org/wiki/Xorshift" target="_top">xorshift</a> that is built into the
+     <code class="code">Math.random</code> function of modern JavaScript engines.</p><p>A seeded random number stream, based on the slower <a class="link" href="https://en.wikipedia.org/wiki/Mersenne_Twister" target="_top">Mersenne Twister</a> algorithm,
+    can be obtained by setting the scenario parameter <code class="code">sim.scenario.randomSeed</code> to a
+    positive integer value.</p><p>Additional streams can be defined and used in the following
+    way:</p><pre class="programlisting">var stream1 = new Random( 1234);
+var stream2 = new Random( 6789);
+var service1Duration = stream1.exponential( 0.5);
+var service2Duration = stream2.exponential( 1.5);</pre><p><span class="bold"><strong>Warning</strong></span>: Avoid using JavaScript's built-in
+     <code class="code">Math.random</code> in simulation code. Always use <code class="code">rand.uniform</code>, or one of
+    the other probability distribution functions from the <code class="code">rand</code> library described above,
+    for generating random numbers. </p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e626"></a>2.3.&nbsp; Simulation Scenarios</h3></div></div></div><p>For obtaining a complete executable <span class="italic">simulation scenario</span>,
+   a simulation model has to be complemented with simulation parameter settings and an initial
+   system state.</p><p>In general, we may have more than one simulation scenario for a simulation model. For
+   instance, the same model could be used in two different scenarios with different initial
+   states.</p><p>A <span class="italic"><span class="bold"><strong>simulation scenario</strong></span></span>
+   consists of</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>simulation parameter settings, such as setting a value for <code class="code">simulationEndTime</code>
+      and <code class="code">randomSeed</code>,</p></li><li class="listitem"><p>a <span class="italic">simulation model</span>,</p></li><li class="listitem"><p>an <span class="italic">initial state</span> definition, and</p></li><li class="listitem"><p>optional <span class="italic">user interface (UI)</span> definitions of, e.g., a
+       <span class="italic">statistics</span> UI and an <span class="italic">observation</span> (or <span class="italic">visualization</span>) UI.</p></li></ol></div><p>An empty template for a simulation scenario has the following structure:</p><pre class="programlisting">// ***** Simulation Parameters **************
+sim.scenario.simulationEndTime = ...;
+sim.scenario.randomSeed = ...;    // optional
+// ***** Simulation Model *******************
+sim.model.time = "...";  // discrete or continuous
+sim.model.timeIncrement = ...;   // optional
+sim.model.timeUnit = "...";  // optional (ms|s|m|h|D|W|M|Y)
+sim.model.objectTypes = [...];
+sim.model.eventTypes = [...];
+// ***** Initial State **********************
+sim.scenario.initialState.objects = {...};
+sim.scenario.initialState.events = {...};
+// ***** Ex-Post Statistics *****************
+sim.model.statistics = {...};</pre><p>We briefly discuss each group of scenario information items in the following
+   sub-sections.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e654"></a>2.3.1.&nbsp;Pre-Defined Simulation Parameters</h4></div></div></div><p>A few simulation parameters are pre-defined as attributes of the simulation scenario. The
+    most important ones are: </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="bold"><strong><span class="italic">simulationEndTime</span></strong></span> -
+      this mandatory attribute defines the duration of a simulation run;</p></li><li class="listitem"><p><span class="italic">stepDuration</span> - an optional attribute for specifying a
+      minimum execution-time duration (in milliseconds) for each simulation step. This can be used
+      for slowing down simulation steps such that simulation runs can be observed.</p></li><li class="listitem"><p><span class="italic">randomSeed</span>: Setting this optional parameter to a
+      positive integer allows to obtain a specific fixed random number sequence (generated by a
+       <a class="link" href="https://en.wikipedia.org/wiki/Mersenne_Twister" target="_top">Mersenne Twister</a>
+      random number generator). This can be used for performing simulation runs with the same
+      (repeated) random number sequence, e.g., for testing a simulation model by checking if
+      expected results are obtained.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e669"></a>2.3.2.&nbsp;Metadata</h4></div></div></div><p>Both the model and the scenario can be documented and described by providing various
+    metadata in a separate <code class="filename">metadata.js</code> file: a <span class="italic">name</span>, a <span class="italic">title</span> and a <span class="italic">shortDescription</span>, as well as meta data like <span class="italic">creator</span>, a <span class="italic">created</span> date, a (last) <span class="italic">modified</span> date and a copyright <span class="italic">license</span>, like so </p><pre class="programlisting">sim.model.name = "...";
+sim.model.title = "...";
+sim.model.shortDescription = "...";
+sim.model.license = "CC BY-NC";</pre><p>It is recommended to use an <span class="italic">attribution share-alike</span>
+    <a class="link" href="http://creativecommons.org/" target="_top">Creative Commons</a> license by specifying its
+    abbreviated name "CC BY-SA" (or "CC BY-NC" for non-commercial use).</p><p>The mandatory model attribute <span class="italic">systemNarrative</span> has to be
+    used for providing a brief description of the system under investigation, as opposed to the
+    design-specific model description provided by <span class="italic">shortDescription</span>:</p><pre class="programlisting">sim.model.systemNarrative = "...";</pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e688"></a>2.3.3.&nbsp;Initial State</h4></div></div></div><p>Defining an initial state means: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>assigning initial values to global variables, if there are any; </p></li><li class="listitem"><p>defining which objects exist initially, and assigning initial values to their
+      properties;</p></li><li class="listitem"><p>defining which events are scheduled initially.</p></li></ol></div><p>A scenario must include an initial state definition, which consists of a set of initial object
+    definitions and a set of initial event definitions. An initial state object is defined as an
+    entry in the map <code class="code">initialState.objects</code> such that the object's <code class="code">id</code> value
+    is the map entry's key, and the map entry's value is a set of property-value slots, including a
+    slot for the special attribute <code class="code">typeName</code> defining the object's type, as shown in the
+    following example: </p><pre class="programlisting">sim.scenario.<span class="bold"><strong>initialState</strong></span>.<span class="bold"><strong>objects</strong></span> = {
+  "1": {<span class="bold"><strong>typeName</strong></span>:"ServiceDesk", name:"serviceDesk1", queueLength:0}
+};</pre><p>Notice that object IDs are positive integers, but when used as keys in a map, they are
+    converted to strings.</p><p>An initial event is defined as an element of the array list <code class="code">initialState.events</code> 
+    in the form of a set of property-value slots, including a slot for the special attribute <code class="code">typeName</code> 
+	defining the event's type, as shown in the following example:</p><pre class="programlisting">sim.scenario.<span class="bold"><strong>initialState</strong></span>.<span class="bold"><strong>events</strong></span> = [
+  {<span class="bold"><strong>typeName</strong></span>: "CustomerArrival", occTime:1, serviceDesk:1}
+];</pre><p>When initial events (or objects) are parametrized with model variables, they can be defined by moving the <code class="code">sim.scenario.initialState.events</code>
+    definition to the <code class="code">sim.scenario.setupInitialState</code> function because this function is executed after the model variables are assigned.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e717"></a>2.4.&nbsp;Simulation Configurations</h3></div></div></div><p>A simulation scenario can be configured with various types of visualizations and various
+   user interfaces (UI):</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Turn on/off the simulation log by setting the configuration parameter
+      <code class="code">sim.config.createLog</code> to true/false.</p></li><li class="listitem"><p>Suppress or show the initial state UI, which allows to inspect/modify the initial values
+     of model variables and the initial state of objects.</p></li><li class="listitem"><p>Turn on/off visualization, if there is one, by setting the configuration parameter
+      <span class="italic">visualize</span> to true/false.</p></li><li class="listitem"><p>Turn on/off user interaction, if there is one, by setting the configuration parameter
+      <span class="italic">userInteractive</span> to true/false. Since user interaction
+     requires visualization, it is also turned off when <code class="code">sim.config.visualize</code> is set to
+     false.</p></li><li class="listitem"><p>Slow down a (standalone) scenario simulation run by setting the configuration parameter
+      <span class="italic">stepDuration</span>, which defines the duration of a simulation
+     step (in ms). This is typically used for being able to observe a simulation run.</p></li><li class="listitem"><p>Credit art work used in a visualization with the parameter <span class="italic">artworkCredits</span>.</p></li></ol></div><p>In the simulation definition file, we could have settings like the following: </p><pre class="programlisting">sim.config.createLog = true;
+sim.config.suppressInitialStateUI = true;
+sim.config.visualize = true;
+sim.config.userInteractive = false;
+sim.config.stepDuration = 200;   // 200 ms observation time per step
+sim.config.artworkCredits = "Weather icons by https://icons8.com";</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e741"></a>2.5.&nbsp;Statistics</h3></div></div></div><p>In scientific and engineering simulation projects the main goal is getting estimates of the
+   values of certain variables or performance indicators with the help of statistical methods. In
+   educational simulations, statistics can be used for observing simulation runs and for learning
+   the dynamics of a simulation model.</p><p>For collecting statistics, suitable <span class="italic">statistics variables</span>
+   have to be defined. The following code defines statistics variables for the service desk
+   model.</p><pre class="programlisting">sim.model.statistics = {
+  "arrivedCustomers": {range:"NonNegativeInteger", label:"Arrived customers"},
+  "departedCustomers": {range:"NonNegativeInteger", label:"Departed customers"},
+  "totalServiceTime": {range:"NonNegativeInteger"},
+  "serviceUtilization": {range:"Decimal", label:"Service utilization",
+      computeOnlyAtEnd: true, decimalPlaces: 1, unit: "%",
+      expression: function () {
+        return sim.stat.totalServiceTime / sim.time * 100
+      }
+  },
+  "maxQueueLength": {objectType:"ServiceDesk", objectIdRef: 1,
+      property:"queueLength", aggregationFunction:"max", label:"Max. queue length"},
+  "averageQueueLength": {objectType:"ServiceDesk", objectIdRef: 1,
+    property:"queueLength", aggregationFunction:"avg", label:"Avg. queue length"},
+  "queueLength": {objectType:"ServiceDesk", objectIdRef: 1,
+    property:"queueLength", showTimeSeries: true, label:"Queue length"}
+};</pre><p>The first three statistics variables (<span class="italic">arrivedCustomers</span>,
+    <span class="italic">departedCustomers</span> and <span class="italic">totalServiceTime</span>) are simple variables that are updated in event routines (<span class="italic">onEvent</span> methods). </p><p>The <span class="italic">serviceUtilization</span> variable is only computed at the
+   end of a simulation run by evaluating the expression specified for it (dividing the total service
+   time by the simulation time). In the case of the remaining three variables, the data source is
+   the object property <code class="code">queueLength</code> of the service desk object with id=1. For the
+   variable <code class="code">maxQueueLength</code> the built-in aggregation function <code class="code">max</code> is
+   applied to this data source, computing the maximum of all <span class="italic">queueLength</span> values, while for the variable <code class="code">averageQueueLength</code> the
+   aggregation function <code class="code">avg</code> is applied. The last variable, <span class="italic">queueLength</span>, is defined for the purpose of getting a time series chart.</p><p>The statistics results are shown in a default view of the statistics output. It is an option
+   to define a non-standard user interface for the statistics output. </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e762"></a>2.6.&nbsp;Simulation Experiments</h3></div></div></div><p>A simulation experiment allows </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>running a simulation scenario repeatedly by defining a number of <span class="italic">replications</span> (iterations) for being able to compute average statistics;</p></li><li class="listitem"><p>running several variants of a simulation scenario, which are called <span class="italic">experiment scenarios</span>, by defining value sets for certain model
+      variables (the <span class="italic">experiment parameters</span>), such that an
+      experiment run consists of a set of experiment scenario runs, one for each combination of
+      parameter values;</p></li><li class="listitem"><p>storing the experiment's statistics data in a database for exporting it to data analysis
+      tools (such as <span class="italic">Microsoft Excel</span> and <span class="italic">RStudio</span>).</p></li></ol></div><p>An experiment is defined with a <code class="code">sim.experiment</code> record on top of a scenario by
+   defining (1) the number of <span class="italic">replications</span>, (2) possibly a list
+   of seed values, one for each replication, and (3) zero or more experiment <span class="italic">parameters</span>. The following code shows an example of a simple experiment definition
+   without parameters:</p><pre class="programlisting">sim.experiment.replications = 5;
+sim.experiment.seeds = [1234, 2345, 3456, 4567, 5678];</pre><p>Running this simple experiment means running the underlying scenario 5 times, each time with
+   another random seed, as specified in the list of seeds. The resulting statistics is computed by
+   averaging all statistics variables defined for the given model.</p><p>When no <span class="italic">seeds</span> are defined, the experiment is run with
+   implicit random seeds using JavaScript's built-in random number generator
+    <code class="code">Math.random</code>, which implies that experiment runs are not reproducible.</p><p>For investigating the effects of changing the values of certain simulation variables, we can
+   define corresponding <span class="italic">experiment parameters</span>, like so:</p><pre class="programlisting">sim.experiment.parameterDefs = [
+  new oes.ExperimentParamDef({name:"<span class="bold"><strong>arrivalEventRate</strong></span>", values:[0.4, 0.5, 0.6]})
+];</pre><p>An experiment parameter must have the same name as the model variable to which it refers. It
+   defines a set of values for this model variable, either using a <span class="italic">values</span> field or a combination of a <span class="italic">startValue</span> and
+    <span class="italic">endValue</span> field (and <span class="italic">stepSize</span> for a non-default increment value) as in the following example:</p><pre class="programlisting">sim.experiment.parameterDefs = [
+  new oes.ExperimentParamDef({name:"<span class="bold"><strong>arrivalEventRate</strong></span>", startValue:0.4, endValue:0.9), 
+];</pre><p>An experiment's statistics data is stored in a browser-managed database using JavaScript's
+    <span class="italic">IndexedDB</span> technology. The name of this database is the same
+   as the name of the simulation model. It can be inspected with the help of the browser's developer
+   tools, which are typically activated with the key combination Shift+Ctrl+I. For instance, in
+   Google's Chrome browser, one has to go to Application/Storage/IndexedDB,</p><p>The experiment statistics database consists of three tables containing data about (1)
+   experiment definitions, (2) experiment runs, and (3) experiment scenario runs, which can be
+   exported to a CSV file. By default, the statistics data obtained from running all replications of
+   an experiment scenario is stored in averaged form as one experiment scenario run record. Whenever
+   the data of all replications is to be stored as experiment scenario runs, this can be controlled
+   by setting </p><pre class="programlisting">sim.experiment.storeEachExperimentScenarioRun =  true;</pre><p>Whenever the time series data of a statistics variable is to be collected and stored, this
+   can be controlled by including the variable's name in the list <span class="italic">timeSeriesStatisticsVariables</span> like so </p><pre class="programlisting">sim.experiment.timeSeriesStatisticsVariables = 
+    ["arrivedCustomers", "departedCustomers"];</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e804"></a>2.7.&nbsp;Animation</h3></div></div></div><p>Animation is important for educational simulations and games, but it can also be used as a
+   general tool for testing, inspecting and validating simulations. </p><p>Simulation runs can be animated by visualizing objects and events, by sonifying events and
+   by allowing human users to interact with the simulated world. OESjs allows adding the following
+   user interfaces (UI) to a simulation model:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>An <span class="bold"><strong><span class="italic">observation UI</span></strong></span>
+      defines various kinds of visualizations (including 3D) for allowing the user to observe what
+      is going on during a simulation run. Space models, objects and events can be visualized by
+      defining a <span class="italic">view</span> for them. An object view is defined by a 2D
+      shape (like a <span class="italic">rectangle</span> or a <span class="italic">polygon</span>) or a 3D shape (like a <span class="italic">cuboid</span> or a
+       <span class="italic">mesh</span>). An event view consists of an animation defined in
+      the form of a Web Animation (of one or more DOM elements using key frames). Events can also be
+       <span class="bold"><strong><span class="italic">sonified</span></strong></span> by attaching
+      specific sounds to event occurrences in an <span class="italic">event appearance</span>
+      definition. </p></li><li class="listitem"><p>A <span class="bold"><strong><span class="italic">user interaction UI</span></strong></span>
+      allows human users to interact with a running simulation by taking decisions on the values of
+      decision variables or by taking actions that change the value of certain simulation variables.
+     </p></li><li class="listitem"><p>A <span class="bold"><strong><span class="italic">participation UI</span></strong></span>
+      allows human users to participate in a multi-agent simulation scenario by receiving
+      situational information and by performing in-world actions via the user interface. Any
+      multi-agent simulation model can be turned into a user-interactive <span class="italic">participatory simulation</span> by adding a participation model and a corresponding
+      UI.</p></li></ol></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e830"></a>2.7.1.&nbsp;Adding an Observation User Interface</h4></div></div></div><p>For being able to observe a simulation run, some form of visualization has to be defined.
+    OESjs supports both the visualization of spatial models and of non-spatial models. In a
+    visualization of a non-spatial model, such as the <span class="italic">ServiceDesk-1</span> model, all object views have to be explicitly positioned in an
+    observation canvas. Rich two-dimensional visualizations can be obtained by using the web
+    technology of <span class="italic">Scalable Vector Graphics (SVG)</span> in the
+    definition of the observation user interface (UI).</p><p>In the case of our <span class="italic">ServiceDesk-1</span> model, we may, for
+    instance, visualize the service desk using either an image or simply a fixed-size rectangle, and
+    its queue in the form of a growing and shrinking bar. </p><p>For defining an observation UI with SVG-based visualization, the following settings have to
+    be made:</p><pre class="programlisting">sim.scenario.observationUI.type = "SVG";
+sim.scenario.observationUI.canvas.width = 600;
+sim.scenario.observationUI.canvas.height = 300;</pre><p>Then we first define the fixed elements of the visualization, giving each one a name (here:
+    "desk") and defining an SVG shape with attributes and a CSS style:</p><pre class="programlisting">sim.scenario.observationUI.<span class="bold"><strong>fixedElements</strong></span> = {
+  "desk": {
+    shapeName: "rect",
+    shapeAttributes: { x: 350, y: 200, width: 50, height: 30},
+    style: "fill:brown; stroke-width:0"
+  }
+};</pre><p>For learning more about SVG shapes and their attributes, see the book chapter <a class="link" href="http://svgpocketguide.com/book/#section-2" target="_top">Basic Shapes &amp; Paths</a> by Joni
+    Trythall.  For learning more about CSS styling of SVG elements, see <a class="link" href="http://www.smashingmagazine.com/2014/11/styling-and-animating-svgs-with-css/" target="_top">Styling And Animating SVGs With CSS</a> by Sara Soueidan.</p><p>The main issue in visualization is to map the state variables of interest to suitable
+    visual parameters such as colors, shape size, etc. For instance, we may want to map the
+     <span class="italic">queueLength</span> attribute to the width of a rectangle, as in the
+    following object view definition:</p><pre class="programlisting">sim.scenario.observationUI.<span class="bold"><strong>objectViews</strong></span> = {
+  "serviceDesk1": [  // a view of the queue
+    { shapeName: "rect",  // a rectangle defined by 
+      shapeAttributes: {  // left-upper corner (x,y) as well as width and height
+        x: function (sd) {return Math.max( 0, 330 - sd.queueLength * 20);},
+        width: function (sd) {return Math.min( 300, sd.queueLength * 20);},
+        y: 150, height: 80
+      },
+      style:"fill:yellow; stroke-width:0"
+    },
+    { shapeName: "text",
+      shapeAttributes: {x: 325, y: 250,
+          textContent: function (sd) {return sd.queueLength;}},
+      style:"font-size:14px; text-anchor:middle"
+    }
+  ]
+};</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d5e849"></a>2.8.&nbsp;Simulation Programming with OESjs</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e851"></a>2.8.1.&nbsp;Using the Simulation Log</h4></div></div></div><p>The OESjs simulator can generate a simulation log, which allows to inspect the evolving
+    states of a simulation run. Inspecting the simulation log can help to understand the dynamics of
+    a model, or it can be used for finding logical flaws in it. </p><p>The contents of the simulation log can be controlled by defining short labels for those
+    objects and object properties as well as event types that we want to see in the log, using the
+     <code class="code">shortLabel</code> attribute. For instance, in the case of the <a class="link" href="https://sim4edu.com/sims/1" target="_top">service desk model</a>, defining the short labels
+    "sd1" for the service desk object, "qLen" for the <code class="code">queueLength</code> property, "Arr" for
+    the <code class="code">CustomerArrival</code> event type and "Dep" for the <code class="code">CustomerDeparture</code>
+    event type leads to the following simulation log:</p><div class="informaltable"><table frame="box" rules="all"><thead><tr>
+      <th colspan="3">Simulation Log</th>
+     </tr><tr>
+      <th>Time</th>
+      <th>System State</th>
+      <th>Future Events</th>
+     </tr></thead><tbody><tr>
+      <td>0</td>
+      <td>sd1{ qLen: 0}</td>
+      <td>Arr@1</td>
+     </tr><tr>
+      <td>1</td>
+      <td>sd1{ qLen: 1}</td>
+      <td>Arr@4, Dep@4</td>
+     </tr><tr>
+      <td>4</td>
+      <td>sd1{ qLen: 1}</td>
+      <td>Arr@5, Dep@8</td>
+     </tr><tr>
+      <td>5</td>
+      <td>sd1{ qLen: 2}</td>
+      <td>Dep@8, Arr@10</td>
+     </tr><tr>
+      <td>8</td>
+      <td>sd1{ qLen: 1}</td>
+      <td>Arr@10, Dep@12</td>
+     </tr><tr>
+      <td>10</td>
+      <td>sd1{ qLen: 2}</td>
+      <td>Dep@12, Arr@12</td>
+     </tr><tr>
+      <td>12</td>
+      <td>sd1{ qLen: 2}</td>
+      <td>Arr@15, Dep@16</td>
+     </tr><tr>
+      <td>15</td>
+      <td>sd1{ qLen: 3}</td>
+      <td>Dep@16, Arr@21</td>
+     </tr><tr>
+      <td>16</td>
+      <td>sd1{ qLen: 2}</td>
+      <td>Dep@18, Arr@21</td>
+     </tr><tr>
+      <td>18</td>
+      <td>sd1{ qLen: 1}</td>
+      <td>Dep@20, Arr@21</td>
+     </tr><tr>
+      <td>20</td>
+      <td>sd1{ qLen: 0}</td>
+      <td>Arr@21</td>
+     </tr></tbody></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e913"></a>2.8.2.&nbsp;Creating a Set of Objects and Events for the Initial State</h4></div></div></div><p>In Section 2.3.3, we have shown how to create initial objects for the initial state of a
+    simulation scenario using the map <code class="code">sim.scenario.initialState.objects</code>. Whenever the
+    initial state has to be populated with a larger set of objects, we can define a
+     <code class="code">sim.scenario.setupInitialState</code> procedure, as in the following example where we
+    create 100 <code class="code">ServiceDesk</code> objects, each with an associated
+     <code class="code">CustomerArrival</code> event:
+    </p><pre class="programlisting">sim.scenario.<span class="bold"><strong>setupInitialState</strong></span> = function () {
+  var i=1;
+  for (i=1; i &lt;= 100; i++) {
+    sim.addObject( new ServiceDesk({
+      id: i,
+      typeName: "ServiceDesk",
+      name: "sd" + i,
+      queueLength: 0
+    }));
+    sim.scheduleEvent( new CustomerArrival( {
+      occTime: 1,
+      serviceDesk: i
+    }));
+  }
+}</pre><p>
+   </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e922"></a>2.8.3.&nbsp;Accessing Objects</h4></div></div></div><p>The objects defined in the initial state, or created during a simulation run, can be
+    accessed either by their ID number or by their name, if they have a name. For instance, the
+    object {typeName:"ServiceDesk", id: 1, name:"serviceDesk1", queueLength: 0} defined above, has
+    the ID number 1 and the name "serviceDesk1". It can be retrieved from the simulator map
+     <code class="code">sim.objects</code> in the following way:</p><pre class="programlisting">var object1 = sim.objects["1"];</pre><p>It can also be retrieved by name from the simulator map <code class="code">sim.namedObjects</code> in
+    the following way:</p><pre class="programlisting">var object1 = sim.namedObjects["serviceDesk1"];</pre><p>For looping over all simulation objects, we can loop over the simulator map
+     <code class="code">sim.objects</code> in the following way:</p><pre class="programlisting">Object.keys( sim.objects).forEach( function (objIdStr) {
+  var obj = sim.objects[objIdStr];
+  ...  // do something with obj
+});</pre><p>We can loop over all simulation objects of a specific type, say <code class="code">ServiceDesk</code>,
+    in the following way:</p><pre class="programlisting">Object.keys( cLASS["ServiceDesk"].instances).forEach( function (objIdStr) {
+  var obj = cLASS["ServiceDesk"].instances[objIdStr];
+  ...  // do something with obj
+});</pre><p>If a simulation has to deal with a large number of objects, using a <code class="code">for</code> loop
+    may be faster than a <code class="code">forEach</code> loop.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d5e939"></a>2.8.4.&nbsp;Defining and Using a History for an Attribute of an Object</h4></div></div></div><p>There are use cases which require to construct a history of the changing values of a
+    certain attribute for a specific object and evaluate or simply display this history. For
+    example, we may define a history for the attribute <code class="code">queueLength</code> of service desks
+    using the <code class="code">historySize</code> parameter:</p><pre class="programlisting">var ServiceDesk = new cLASS({
+  Name: "ServiceDesk",
+  supertypeName: "oBJECT",
+  properties: {
+    "queueLength": { range: "NonNegativeInteger", <span class="bold"><strong>historySize</strong></span>: 7,
+        label: "Queue length", shortLabel: "qlen"}
+  }
+});</pre><p>In such a case, the OESjs simulator automatically constructs a <span class="italic">history buffer</span> of the specified size, which can, for instance, be converted to a
+    string with the expression</p><pre class="programlisting">sim.namedObjects["serviceDesk1"].<span class="bold"><strong>history.queueLength</strong></span>.toString()</pre><p>A <span class="bold"><strong><span class="italic">history buffer</span></strong></span> is a
+     <span class="italic">ring buffer</span>, having a limited size and an <code class="code">add</code>
+    operation for adding new items to the buffer as in:</p><pre class="programlisting">sim.namedObjects["serviceDesk1"].history.queueLength.<span class="bold"><strong>add</strong></span>( this.queueLength);</pre><p>Notice that the oldest item may get lost when the (fixed-size) buffer is already full and a
+    new item is added.</p></div></div></div></div></body></html>

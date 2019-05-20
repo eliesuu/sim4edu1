@@ -1,0 +1,173 @@
+<!-- ===========================================================================
+ * Machine-4 - An example of an Object Event Simulation.
+ * @copyright Copyright 2016 GesP Wagner, BTU (Germany) + ODU (VA, USA)
+ * @author GesP Wagner
+ * @license The MIT License (MIT)
+================================================================================ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hans" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>OESjs - 四台连续机器的加工网络模型</title>
+  <meta name="viewport" content="width=device-width, initial-scale = 1.0" />
+  <meta http-equiv="Content-Language" content="zh-Hans"/>
+  <meta name="description" content="模拟场景定义了传入订单的入口节点，表示四个机器M1-M4的4个连续处理节点和出口节点。" />
+  <link rel="stylesheet" href="../../../sims/framework/description.css" />
+ <script src="../../../sims/13/metadata.js"></script>
+ <script src="metadata.js"></script> <!-- overwrite variables to be translated -->
+ <script src="../../i18n-translations.js"></script>
+ <script src="../../../sims/framework/description.js"></script>
+</head>
+<body onload="oes.ui.setupDescription()">
+ <div id="frontMatter">
+  <h1>四台连续机器的加工网络模型</h1>
+  <p><strong>分类标签</strong>: 商业运营管理, 离散事件模拟（DES），下一事件时间连续，网络流程模型</p>
+  <figure class="right"><img src="media/img/theme-image.svg" alt="" width="240" /></figure>
+  <section id="shortDescription"></section>
+ </div>
+
+ <section class="mbd collapsed"><h1><span>►</span>概念模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-CM" class="expl"></div>
+
+   <section><h1>概念信息模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CIM" class="expl"></div>
+     <p>潜在相关对象类型是:</p>
+<!--
+     <figure class="right-float">
+       <img src="CIM-ObjT.svg" width="450"/>
+       <figcaption>一个概念模型来描述对象类型</figcaption>
+     </figure>
+-->
+     <ol>
+       <li>订单</li>
+       <li>机器</li>
+       <li>进入队列</li>
+       <li>工人</li>
+     </ol>
+     <p>潜在的相关事件类型是:</p>
+     <ol>
+       <li>(订单) 到达</li>
+       <li>订单被推送进入队列</li>
+       <li><i>机器活动表现（流程步骤）</i>,</li>
+       <li>元件离开</li>
+     </ol>
+<!--     
+     <p>Both object types and event types, with their participation associations, can be visually described
+       in a UML class diagram, as shown below.</p>
+     <figure>
+       <img src="media/img/CIM.svg" width="600"/>
+       <figcaption>一个概念信息模型描述对象类型和事件类型。</figcaption>
+     </figure>
+-->     
+   </section>
+
+   <section>
+     <h1>概念流程模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-CPM" class="expl"></div>
+     <table>
+       <caption>事件规则</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>订单到达</td>
+         <td>如果机器忙，那么推送订单进入队列，否则开始一个新的机器活动</td>
+       </tr>
+       <tr>
+         <td>机器活动结束</td>
+        <td>如果有继承机器
+然后转发订单/项目，如果不忙，则开始处理
+否则处理完的订单完成，制造的物品离开;
+如果队列中仍有订单等待，
+然后开始下一个机器活动</td>
+       </tr>
+       </tbody>
+     </table>
+<!--     
+     <figure>
+       <img src="media/img/CPM.svg" width="800"/>
+       <figcaption>A 概念流程模型 describing the conditional succession of events and activities.</figcaption>
+     </figure>
+-->
+   </section>
+ </section>
+
+ <section class="mbd collapsed"><h1><span>►</span>模拟设计模型 <sup class="expl-req">?</sup></h1>
+   <div id="expl-DM" class="expl"></div>
+
+   <p>在这个连续四个制造机器的模型中，所有机器都被建模为通用对象类型<code> Machine </code>的实例，这样它们就可以执行<code> MachineActivity </code>类型的活动。该模型允许有链 任何长度的制造机器。</p>
+
+   <section><h1>信息设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-IDM" class="expl"></div>
+     <p>用于计算统计<i>平均时间的系统</i>和<i> machineActivity utilizations </i>的计算设计是通过对以下类型的对象，事件和活动进行建模来获得的：</p>
+  <ul>
+    <li>两种对象类型：<b> <code> Machine </code> </b>和<b> <code> Order </code> </b>，这样机器（1）的等待线表示为多 由相应的关联端定义的值引用属性<code> waitingOrders </code>，以及（2）可以具有表示为由对应关联端定义的引用属性<code> nextMachine </code>的后继机器。</li>
+    <li>一种事件类型：<b> <code> OrderArrival </code> </b>，带有引用属性<code> machine </code>，用于表示订单到达某台机器。 作为外生事件类型，<code> OrderArrival </code>具有<code> recurrence </code>函数，该函数表示用于计算两个后续订单到达事件之间的时间的随机变量。</li>
+    <li>一种活动类型：<b> <code> MachineActivity </code> </b>，与对象类型<code> Machine </code>具有资源关联（用于表示在某台计算机上执行机器活动） 并且具有函数<code> randomDuration </code>，表示随机变量，该随机变量模拟机器活动持续时间的随机变化。</li>
+  </ul>
+<!--
+     <p>The object types, event types and activity types described above, together with their participation
+       associations, are visually described in the following UML class diagram:</p>
+     <figure>
+       <img src="media/img/IDM.svg" width="600"/>
+       <figcaption>An 信息设计模型 describing object types, event types and activity types.</figcaption>
+     </figure>
+-->
+   </section>
+   <section><h1>流程设计模型 <sup class="expl-req">?</sup></h1>
+     <div id="expl-PDM" class="expl"></div>
+     <table>
+       <caption>事件规则设计表</caption>
+       <thead>
+       <tr>
+         <td>ON（事件类型）</td><td>DO（事件路径）</td>
+       </tr>
+       </thead>
+       <tbody>
+       <tr>
+         <td>OrderArrival( sP) @ t</td>
+         <td>
+           CREATE order{ arrivalTime: t}<br/>
+           PUSH order TO sP.waitingOrders<br/>
+           IF sP.waitingOrders.length = 1<br/>
+           THEN SCHEDULE ActivityStart("MachineActivity", sP) @ t'
+         </td>
+       </tr>
+       <tr>
+         <td>ActivityEnd("MachineActivity", a) @ t</td>
+         <td>
+           SET sP = a.machine<br/>
+           POP order FROM sP.waitingOrders<br/>
+           IF HAS-VALUE( sP.nextMachine)<br/>
+           THEN SET nextSP = sP.nextMachine<br/>
+           &nbsp;&nbsp;&nbsp;PUSH order TO nextSP.waitingOrders<br/>
+           &nbsp;&nbsp;&nbsp;IF nextSP.waitingOrders.length = 1<br/>
+           &nbsp;&nbsp;&nbsp;THEN SCHEDULE ActivityStart("MachineActivity", nextSP) @ t'<br/>
+           ELSE REMOVE order FROM SIMULATION<br/>
+           IF sP.waitingOrders.length > 0<br/>
+           THEN SCHEDULE ActivityStart("MachineActivity", sP) @ t'
+         </td>
+       </tr>
+       </tbody>
+     </table>
+     <p>请注意，<i> t'</i>表示<i> t </i>之后的模拟时间中的下一个时刻。 如果模拟使用离散时间，则<i> t'= t + 1 </i>，否则（如果模拟使用连续时间），那么<i>t' = t + &Delta;t</i> 其中 <i>&Delta;t</i>表示由模拟模型的时间粒度定义的最小时间增量。</p>
+   </section>
+ </section>
+
+<!--
+ <section class="mbd collapsed"><h1><span>►</span>参见</h1>
+   <p>针对相同系统/问题/域的其他对象事件模拟（OES）模型:</p>
+   <ol>
+     <li><a href="../1/index.html">MachineActivityDesk-1</a>: A machineActivity queue model
+       (one machineActivity and one queue) with two statistics: <i>maximum queue length</i> and <i>machineActivity utilization</i>.
+       The model abstracts away from individual orders and from the composition of the queue.</li>
+   </ol>
+ </section>
+-->
+</body>
+</html>
+
