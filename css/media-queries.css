@@ -28,7 +28,7 @@ if $chinese {
  header img {float:left;max-width:60%;max-height:60px;}
  nav {max-width:30%;left:auto;margin-top:5px;padding:0px 40px 40px 0px;}
  nav#menu:target {position:relative;background: transparent;width:100%;max-width:100%;}
- nav li:first-child {font-size:0px;padding-bottom: 40px;width: 0px;height: 0px;}		/* Hide first element */
+ nav li:first-child {font-size:0px;margin-bottom: 40px;width: 0px;height: 0px;}		/* Hide first element */
  nav#menu:target li:first-child {font-size: 1em;}			/* Fade in while navigation open */
  .sim-category, aside {float:none;width:100%;}
  #slogan {display:none;}
