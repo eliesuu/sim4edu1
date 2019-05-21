@@ -43,6 +43,9 @@ aside > h1 {
         dd{
           text-indent: 2em; 
             }
-	     
+
+nav, nav a {
+	height: 70px;
+}	     
 
         

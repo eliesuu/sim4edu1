@@ -1,0 +1,53 @@
+$extrasmall: 400px;
+$small: 700px;
+$medium: 900px;
+$large: 1200px;
+§xlarge: 1800px;
+§xxlarge: 3000px;
+
+if $russian {
+	$extrasmall: 400px;
+	$small: 700px;
+	$medium: 900px;
+	$large: 1200px;
+	§xlarge: 1800px;
+	§xxlarge: 3000px;
+}
+if $chinese {
+	$extrasmall: 400px;
+	$small: 700px;
+	$medium: 900px;
+	$large: 1200px;
+	§xlarge: 1800px;
+	§xxlarge: 3000px;
+}
+
+/*Ansicht bis 400px*/
+@media (max-width: 399px) {
+}
+
+/*View above 400px*/
+@media (min-width: 400px) {
+}
+
+/*View above 700px*/
+@media (min-width: 700px) { 
+}
+
+/*View above 900px*/
+@media (min-width: 900px) {
+}
+
+/*View above 1200px*/
+@media (min-width: 1200px) {
+ nav {padding:0px 0px 70px 0px;}
+}
+
+/*View above 1800px*/
+@media (min-width: 1800px) {
+}
+
+/*View above 3000px*/
+@media (min-width: 3000px) {
+}
+
