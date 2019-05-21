@@ -23,7 +23,7 @@ if $chinese {
 }
 
 /*Ansicht bis 400px*/
-@media screen and (max-width: 399px) {
+@media screen and (max-width: $extrasmall) {
  header {padding:5px;}
  header img {float:left;max-width:60%;max-height:60px;}
  nav {max-width:30%;left:auto;margin-top:5px;padding:0px 40px 40px 0px;}
