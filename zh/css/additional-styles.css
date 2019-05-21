@@ -46,6 +46,12 @@ aside > h1 {
 
 nav, nav a {
 	height: 70px;
-}	     
+}
+
+nav li:last-child {
+	height: 30px;
+	padding 0px;
+}
+	     
 
         

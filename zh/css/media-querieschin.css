@@ -24,6 +24,9 @@ if $chinese {
 
 /*Ansicht bis 400px*/
 @media (max-width: 399px) {
+	nav{padding-right:60px;margin:0px;}
+	nav li:last-child {padding 0px;}
+
 }
 
 /*View above 400px*/
@@ -40,7 +43,6 @@ if $chinese {
 
 /*View above 1200px*/
 @media (min-width: 1200px) {
- nav {padding:0px 0px 70px 0px;}
 }
 
 /*View above 1800px*/
