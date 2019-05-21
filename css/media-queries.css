@@ -1,29 +1,12 @@
-$extrasmall: 400px;
-$small: 700px;
-$medium: 900px;
-$large: 1200px;
-§xlarge: 1800px;
-§xxlarge: 3000px;
-
-if $russian {
-	$extrasmall: 400px;
-	$small: 700px;
-	$medium: 900px;
-	$large: 1200px;
-	§xlarge: 1800px;
-	§xxlarge: 3000px;
-}
-if $chinese {
-	$extrasmall: 400px;
-	$small: 700px;
-	$medium: 900px;
-	$large: 1200px;
-	§xlarge: 1800px;
-	§xxlarge: 3000px;
-}
+$extrasmall: 400px
+$small: 700px
+$medium: 900px
+$large: 1200px
+§xlarge: 1800px
+§xxlarge: 3000px
 
 /*Ansicht bis 400px*/
-@media screen and (max-width: $extrasmall - 1) {
+@media (max-width: $extrasmall - 1) {
  header {padding:5px;}
  header img {float:left;max-width:60%;max-height:60px;}
  nav {max-width:30%;left:auto;margin-top:5px;padding:0px 40px 40px 0px;}
@@ -36,7 +19,7 @@ if $chinese {
 }
 
 /*View above 400px*/
-@media (min-width: $extrasmall) { 
+@media (min-width: $extrasmall) {
  header {padding:10px 20px 10px 20px;}
  header img {max-width:70%;float:left;max-height:50px;} 
  nav {max-width:100%;padding:5px 40px 0px 0px;margin-right:10px;right:auto;} 
