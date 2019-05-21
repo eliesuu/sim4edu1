@@ -1,0 +1,7 @@
+/*Ansicht bis 400px*/
+@media (max-width: 399px) {
+	nav{padding-right:60px;margin:0px;}
+	nav li:last-child {padding 0px;}
+}
+
+
