@@ -2,6 +2,8 @@
 @media (max-width: 399px) {
 	nav{padding-right:60px;margin:0px;}
 	nav li:last-child {padding: 0px;}
+	#language {font-size:80%;}
+	#language svg{width:15px;}
 }
 
 @media (min-width: 1200px) {
